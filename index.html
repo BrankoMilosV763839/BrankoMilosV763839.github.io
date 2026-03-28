@@ -3,34 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFA SECURED BANKING</title>
+    <title>ERSTE BANK | SECURE BANKING</title>
     <style>
-        body { background-color: #0b0e14; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .login-box { background: #161b22; padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 100%; max-width: 300px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
-        #dashboard { display: none; width: 100%; max-width: 400px; }
-        .card { background: linear-gradient(135deg, #1f6feb, #111); padding: 30px; border-radius: 20px; margin-top: 20px; }
-        button { background: #238636; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        body { background-color: #0b0e14; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
+        
+        /* Login Box Styling */
+        #login-page { padding-top: 100px; }
+        .login-box { background: #161b22; padding: 40px; border-radius: 12px; border: 1px solid #30363d; width: 320px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; }
+        button { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #2ea043; }
+
+        /* Dashboard Styling */
+        #dashboard { display: none; width: 100%; max-width: 900px; margin: 20px auto; text-align: left; animation: fadeIn 0.5s; }
+        .nav { background: #003366; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+        .mfa-tag { background: #2ecc71; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #ffffff; color: #333; padding: 25px; border-radius: 0 0 8px 8px; }
+        .card { border: 1px solid #eee; padding: 15px; border-radius: 8px; }
+        h3 { color: #003366; margin-top: 0; font-size: 16px; border-bottom: 2px solid #003366; padding-bottom: 5px; }
+        
+        .val { font-weight: bold; font-family: monospace; display: block; margin-bottom: 10px; font-size: 15px; }
+        .label { color: #888; font-size: 12px; display: block; }
+        
+        .amt-box { padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
+        .dep { background: #e8f5e9; color: #2e7d32; }
+        .rem { background: #ffebee; color: #c62828; }
+        .hold { background: #e3f2fd; border: 2px dashed #2196f3; color: #0d47a1; margin-top: 15px; }
+
+        .notice { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin-top: 20px; font-size: 12px; color: #555; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
+    <!-- LOGIN PAGE -->
     <div id="login-page">
         <div class="login-box">
-            <h2>🔒 MFA LOGIN</h2>
+            <h2 style="font-size: 18px;">🛡️ MFA SECURE BANKING</h2>
             <input type="text" id="user" placeholder="Username">
             <input type="password" id="pass" placeholder="Password">
-            <button onclick="login()">AUTHORIZE</button>
-            <p id="err" style="color: red; display: none;">Invalid Login!</p>
+            <p id="err" style="color: #f85149; font-size: 12px; display: none;">Invalid credentials. Please try again.</p>
+            <button onclick="login()">AUTHORIZE ACCESS</button>
         </div>
     </div>
 
+    <!-- DASHBOARD PAGE -->
     <div id="dashboard">
-        <div class="card">
-            <p>TOTAL BALANCE</p>
-            <h1 style="color: #3fb950;">₱ 125,500.00</h1>
-            <p style="font-size: 0.8rem;">USER: brankomilos</p>
-            <button onclick="location.reload()" style="background: #30363d;">LOGOUT</button>
+        <div class="nav">
+            <strong>ERSTE BANK ONLINE</strong>
+            <span class="mfa-tag">🛡️ MFA PROTECTED SESSION</span>
+        </div>
+        
+        <div class="main-grid">
+            <!-- Left: Bank Details -->
+            <div class="card">
+                <h3>Bank Information</h3>
+                <span class="label">BANK NAME CODE</span>
+                <span class="val" style="color: #e67e22;">TORTILLAS</span>
+                
+                <span class="label">INSTITUTION</span>
+                <span class="val">Erste & Steiermärkische Bank</span>
+                
+                <span class="label">IBAN NUMBER</span>
+                <span class="val">HR51 2402 0063 2089 8560 5</span>
+                
+                <span class="label">SWIFT / BIC</span>
+                <span class="val">ESBCHR22</span>
+                
+                <span class="label">CARD TYPE</span>
+                <span class="val">Visa Classic</span>
+            </div>
+
+            <!-- Right: Financials -->
+            <div class="card" style="text-align: center;">
+                <h3>Account Summary</h3>
+                <div class="amt-box dep">
+                    <span class="label">Current Deposit</span>
+                    <span style="font-size: 20px; font-weight: 800;">€ 400.00</span>
+                </div>
+                <div class="amt-box rem">
+                    <span class="label">Remaining Needed</span>
+                    <span style="font-size: 20px; font-weight: 800;">€ 180.00</span>
+                </div>
+                <div class="amt-box hold">
+                    <span class="label">🔒 REFUND ON HOLD</span>
+                    <span style="font-size: 24px; font-weight: 800;">€ 13,180.00</span>
+                </div>
+            </div>
+
+            <!-- Bottom: Legal Note -->
+            <div class="notice" style="grid-column: span 2;">
+                <strong>📌 OFFICIAL RELEASE NOTICE:</strong><br>
+                Kindly wait for the schedule. Bring all original Notarized documents: 
+                Identity, Residency, Source of Funds, Proof of Property, and Business Permit.
+                <button onclick="location.reload()" style="background: #003366; margin-top: 10px; width: 120px; padding: 8px; font-size: 12px;">LOGOUT</button>
+            </div>
         </div>
     </div>
 
@@ -38,7 +107,9 @@
         function login() {
             var u = document.getElementById("user").value;
             var p = document.getElementById("pass").value;
-            if (u === "brankomilos" && p === "0816") {
+            
+            // Login check gamit ang credentials mo sa image
+            if (u === "BrankoMilos" && p === "0816") {
                 document.getElementById("login-page").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
             } else {
