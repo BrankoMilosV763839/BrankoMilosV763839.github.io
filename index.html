@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFA SECURED BANKING</title>
+    <style>
+        body { background-color: #0b0e14; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-box { background: #161b22; padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 100%; max-width: 300px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
+        #dashboard { display: none; width: 100%; max-width: 400px; }
+        .card { background: linear-gradient(135deg, #1f6feb, #111); padding: 30px; border-radius: 20px; margin-top: 20px; }
+        button { background: #238636; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    </style>
 </head>
-<body style="text-align:center; font-family:sans-serif; background:#111; color:white;">
-  <h1>🔥 Welcome sa Website ko 🔥</h1>
-  <p>Ginawa ko ito gamit phone lang 📱</p>
-  <button onclick="alert('Hello!')">Click me</button>
+<body>
+
+    <div id="login-page">
+        <div class="login-box">
+            <h2>🔒 MFA LOGIN</h2>
+            <input type="text" id="user" placeholder="Username">
+            <input type="password" id="pass" placeholder="Password">
+            <button onclick="login()">AUTHORIZE</button>
+            <p id="err" style="color: red; display: none;">Invalid Login!</p>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="card">
+            <p>TOTAL BALANCE</p>
+            <h1 style="color: #3fb950;">₱ 125,500.00</h1>
+            <p style="font-size: 0.8rem;">USER: brankomilos</p>
+            <button onclick="location.reload()" style="background: #30363d;">LOGOUT</button>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            var u = document.getElementById("user").value;
+            var p = document.getElementById("pass").value;
+            if (u === "brankomilos" && p === "0816") {
+                document.getElementById("login-page").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+            } else {
+                document.getElementById("err").style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>
