@@ -1,112 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERSTE BANK | Secure Portal</title>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; margin: 0; color: #333; }
-        .mfa-header { background: #003366; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .mfa-tag { background: #27ae60; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        
-        /* Login Section */
-        #login-section { height: 100vh; display: flex; align-items: center; justify-content: center; background: #0b0e14; }
-        .login-card { background: #161b22; padding: 40px; border-radius: 10px; width: 350px; text-align: center; border: 1px solid #30363d; }
-        .login-card input { width: 90%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 5px; }
-        .login-card button { width: 98%; padding: 12px; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-
-        /* Dashboard Section */
-        #dashboard { display: none; max-width: 1200px; margin: 30px auto; padding: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h3 { border-bottom: 2px solid #003366; padding-bottom: 8px; color: #003366; margin-top: 0; font-size: 16px; }
-
-        /* Financials */
-        .amt { font-size: 24px; font-weight: bold; font-family: monospace; }
-        .red { color: #c0392b; } .green { color: #27ae60; } .blue { color: #2980b9; }
-        .box { padding: 15px; border-radius: 5px; margin-top: 10px; border: 1px solid #eee; }
-
-        /* smaddress Result */
-        #smaddress-display { display: none; background: #fff3e0; border-left: 5px solid #f39c12; padding: 15px; margin-top: 15px; animation: slideIn 0.3s; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-    <!-- 1. LOGIN -->
-    <div id="login-section">
-        <div class="login-card">
-            <h2 style="color: white; font-size: 20px;">🛡️ MFA LOGIN</h2>
-            <input type="text" id="u" placeholder="Username">
-            <input type="password" id="p" placeholder="Password">
-            <button onclick="doLogin()">AUTHORIZE</button>
-        </div>
-    </div>
-
-    <!-- 2. DASHBOARD -->
-    <div id="dashboard">
-        <div class="mfa-header" style="border-radius: 8px 8px 0 0;">
-            <strong>ERSTE BANK PORTAL</strong>
-            <span class="mfa-tag">🛡️ MFA PROTECTED SESSION</span>
-        </div>
-
-        <div class="grid">
-            <!-- Left: Bank Details -->
-            <div class="card">
-                <h3>Bank Information</h3>
-                <p><strong>NAME CODE:</strong> <span style="color: #d35400;">TORTILLAS</span></p>
-                <p><strong>IBAN:</strong> HR51 2402 0063 2089 8560 5</p>
-                <p><strong>SWIFT:</strong> ESBCHR22</p>
-                <p><strong>CARD:</strong> Visa Classic</p>
-                
-                <div style="margin-top: 25px;">
-                    <h3>System Verification</h3>
-                    <label style="font-size: 12px; color: #666;">Enter ORS Reference Number:</label>
-                    <div style="display: flex; gap: 5px; margin-top: 5px;">
-                        <input type="text" id="ors" placeholder="ORS-2024-XXXX" style="flex: 1; padding: 8px;">
-                        <button onclick="checkORS()" style="padding: 8px; background: #003366; color: white; border: none; cursor: pointer;">VERIFY</button>
-                    </div>
-                </div>
-
-                <div id="smaddress-display">
-                    <strong>SYSTEM ADDRESS (smaddress):</strong><br>
-                    <code id="sm-val" style="font-size: 14px;"></code><br>
-                    <small>Processing Branch: Rijeka HQ - System 063</small>
-                </div>
-            </div>
-
-            <!-- Right: Balances -->
-            <div class="card" style="text-align: center;">
-                <h3>Account Summary</h3>
-                <div class="box">
-                    <div style="font-size: 12px; color: #888;">Current Deposit</div>
-                    <div class="amt green">€ 400.00</div>
-                </div>
-                <div class="box">
-                    <div style="font-size: 12px; color: #888;">Pending Settlement</div>
-                    <div class="amt red">€ 180.00</div>
-                    <div style="font-size: 11px; margin-top: 5px;">(Required Total: € 580.00)</div>
-                </div>
-                <div class="box" style="background: #ebf5fb; border: 2px dashed #2980b9;">
-                    <div style="font-size: 12px; color: #2980b9; font-weight: bold;">🔒 REFUND ON HOLD</div>
-                    <div class="amt blue">€ 13,180.00</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="margin-top: 20px; background: #fdf2f2; border-left: 5px solid #c0392b;">
-            <strong>📌 RELEASE REQUIREMENTS:</strong>
-            <p style="font-size: 13px;">Wait for the schedule. Bring original Notarized copies of: Identity, Residency, Source of Funds, Proof of Property, and Business Permit.</p>
-        </div>
-    </div>
-
-    <script>
-        function doLogin() {
-            if(document.getElementById('u').value === "BrankoMilos" && document.getElementById('p').value === "0816") {
-                document.getElementById('login-section').style.display = "none";
-                document.getElementById('dashboard').style.display = "block";
-            } else { alert("Invalid Credentials"); }
-        }
 
         function checkORS() {
             var code = document.getElementById('ors').value;
@@ -114,6 +5,143 @@
                 document.getElementById('smaddress-display').style.display = "block";
                 document.getElementById('sm-val').innerHTML = "Jadranski trg 3a, 51000 Rijeka, Croatia";
             } else { alert("Reference Code Not Found"); }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERSTE BANK | SECURE PORTAL</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0b0e14; margin: 0; color: white; text-align: center; }
+        
+        /* LOGIN BOX - Eto yung makikita muna nila */
+        #login-section { height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: #161b22; padding: 40px; border-radius: 12px; width: 320px; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .login-card input { width: 90%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 6px; }
+        .login-card button { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        /* DASHBOARD - Lalabas pagkatapos ng login */
+        #dashboard { display: none; max-width: 1000px; margin: 30px auto; background: white; color: #333; border-radius: 12px; overflow: hidden; text-align: left; animation: fadeIn 0.5s; }
+        .nav { background: #003366; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .mfa-tag { background: #2ecc71; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 30px; }
+        .card { border: 1px solid #eee; padding: 20px; border-radius: 8px; }
+        h3 { color: #003366; border-bottom: 2px solid #003366; padding-bottom: 8px; margin-top: 0; font-size: 16px; }
+        
+        .val { font-weight: bold; font-family: monospace; display: block; margin-bottom: 12px; font-size: 15px; }
+        .label { color: #888; font-size: 12px; display: block; margin-bottom: 2px; }
+        
+        .amt-box { padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 10px; border: 1px solid #eee; }
+        .dep { background: #e8f5e9; color: #2e7d32; }
+        .rem { background: #ffebee; color: #c62828; }
+        .hold { background: #e3f2fd; border: 2px dashed #2196f3; color: #0d47a1; margin-top: 15px; }
+
+        #sm-display { display: none; background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin-top: 15px; font-size: 13px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- 1. LOGIN PAGE -->
+    <div id="login-section">
+        <div class="login-card">
+            <h2 style="font-size: 20px; margin-bottom: 20px;">🛡️ MFA LOGIN</h2>
+            <input type="text" id="user" placeholder="Username">
+            <input type="password" id="pass" placeholder="Password">
+            <p id="err" style="color: #f85149; font-size: 12px; display: none;">Invalid Login</p>
+            <button onclick="login()">AUTHORIZE</button>
+        </div>
+    </div>
+
+    <!-- 2. BANK DASHBOARD -->
+    <div id="dashboard">
+        <div class="nav">
+            <strong>ERSTE BANK PORTAL</strong>
+            <span class="mfa-tag">🛡️ MFA PROTECTED SESSION</span>
+        </div>
+        
+        <div class="main-grid">
+            <!-- Left: Info -->
+            <div class="card">
+                <h3>Bank Information</h3>
+                <span class="label">BANK NAME CODE</span>
+                <span class="val" style="color: #e67e22;">TORTILLAS</span>
+                
+                <span class="label">IBAN NUMBER</span>
+                <span class="val">HR51 2402 0063 2089 8560 5</span>
+                
+                <span class="label">SWIFT / BIC</span>
+                <span class="val">ESBCHR22</span>
+                
+                <span class="label">CARD TYPE</span>
+                <span class="val">Visa Classic</span>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 14px;">System Verification</h3>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="ors" placeholder="Enter ORS Code" style="flex: 1; padding: 8px;">
+                        <button onclick="checkORS()" style="background: #003366; color: white; border: none; padding: 8px; cursor: pointer;">VERIFY</button>
+                    </div>
+                    <div id="sm-display">
+                        <strong>SYSTEM ADDRESS (smaddress):</strong><br>
+                        <code>Jadranski trg 3a, 51000 Rijeka, Croatia</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Financials -->
+            <div class="card" style="text-align: center;">
+                <h3>Account Summary</h3>
+                <div class="amt-box dep">
+                    <span class="label">Current Deposit</span>
+                    <span style="font-size: 22px; font-weight: 800;">€ 400.00</span>
+                </div>
+                <div class="amt-box rem">
+                    <span class="label">Remaining Needed</span>
+                    <span style="font-size: 22px; font-weight: 800;">€ 180.00</span>
+                    <small style="display: block; font-size: 10px;">(Total Required: € 580.00)</small>
+                </div>
+                <div class="amt-box hold">
+                    <span class="label" style="font-weight: bold;">🔒 REFUND ON HOLD</span>
+                    <span style="font-size: 26px; font-weight: 800;">€ 13,180.00</span>
+                </div>
+            </div>
+
+            <!-- Footer: Legal -->
+            <div style="grid-column: span 2; background: #fffaf0; border-left: 5px solid #ed8936; padding: 20px; font-size: 13px;">
+                <strong>📌 RELEASE NOTICE:</strong> Kindly wait for the schedule. Bring original Notarized documents: 
+                Identity, Residency, Source of Funds, Proof of Property, and Business Permit.
+                <button onclick="location.reload()" style="background: #003366; color: white; border: none; padding: 5px 15px; float: right; cursor: pointer;">LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            var u = document.getElementById("user").value;
+            var p = document.getElementById("pass").value;
+            
+            // ETO NA YUNG EKSAGTONG LOGIN MO
+            if (u === "BrankoMilos" && p === "0816") {
+                document.getElementById("login-section").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+            } else {
+                document.getElementById("err").style.display = "block";
+            }
+        }
+
+        function checkORS() {
+            var ors = document.getElementById("ors").value;
+            if (ors === "ORS-2024-0816") {
+                document.getElementById("sm-display").style.display = "block";
+            } else {
+                alert("Invalid ORS Code");
+            }
         }
     </script>
 </body>
