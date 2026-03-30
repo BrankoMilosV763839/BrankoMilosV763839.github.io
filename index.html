@@ -8,24 +8,20 @@
         :root { --erste-blue: #00529b; --erste-orange: #fe5000; --bg: #f4f7f9; --text: #333; }
         body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; color: var(--text); }
         
-        /* Official Navbar Look */
         .navbar { background: white; border-bottom: 3px solid var(--erste-blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { color: var(--erste-blue); font-weight: 900; font-size: 22px; letter-spacing: -1px; }
         .logo span { color: var(--erste-orange); }
         .mfa-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; }
 
-        /* Professional Dashboard Grid */
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-        .card { background: white; border-radius: 4px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #dee2e6; }
+        .card { background: white; border-radius: 4px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #dee2e6; margin-bottom: 20px; }
         h2 { color: var(--erste-blue); font-size: 18px; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 15px; font-weight: 600; }
 
-        /* Bank Info Styling */
         .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f8f9fa; font-size: 14px; }
         .label { color: #6c757d; font-weight: 500; }
         .value { color: #212529; font-weight: 600; font-family: 'Consolas', monospace; }
         .code { color: var(--erste-orange); font-weight: 800; }
 
-        /* Financials Section */
         .balance-card { text-align: center; background: #fafafa; border: 1px solid #eee; padding: 20px; border-radius: 4px; margin-bottom: 15px; }
         .amt { font-size: 28px; font-weight: 700; color: var(--erste-blue); display: block; margin-top: 5px; }
         .pending { color: #d93025 !important; }
@@ -33,11 +29,9 @@
         .hold-section { background: #fff8f1; border: 2px solid #ffe8cc; padding: 25px; margin-top: 20px; position: relative; }
         .lock-icon { font-size: 12px; background: var(--erste-orange); color: white; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; position: absolute; top: -10px; left: 20px; }
 
-        /* Official Footer Notice */
         .legal-notice { grid-column: span 2; background: #f8f9fa; border-top: 4px solid var(--erste-blue); padding: 25px; font-size: 13px; color: #495057; line-height: 1.6; }
         .logout-btn { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; float: right; font-weight: bold; }
 
-        /* Secure Login Logic */
         #login-overlay { background: #002d57; height: 100vh; display: flex; align-items: center; justify-content: center; position: fixed; width: 100%; z-index: 1000; }
         .login-box { background: white; padding: 40px; border-radius: 4px; width: 350px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px; }
@@ -46,7 +40,6 @@
 </head>
 <body>
 
-    <!-- SECURE LOGIN SCREEN -->
     <div id="login-overlay">
         <div class="login-box">
             <div class="logo" style="margin-bottom: 25px;">ERSTE <span>GROUP</span></div>
@@ -57,7 +50,6 @@
         </div>
     </div>
 
-    <!-- MAIN BANKING INTERFACE -->
     <div id="bank-ui" style="display:none;">
         <div class="navbar">
             <div class="logo">ERSTE <span>BANK</span></div>
@@ -65,58 +57,49 @@
         </div>
 
         <div class="container">
-            <!-- Left: Official Account Details -->
-            <div class="card">
-                <h2>Account Information</h2>
-                <div class="row">
-                    <span class="label">Bank Reference Code</span>
-                    <span class="value code">TORTILLAS</span>
+            <div class="left-col">
+                <!-- Account Information -->
+                <div class="card">
+                    <h2>Account Information</h2>
+                    <div class="row"><span class="label">Bank Reference Code</span><span class="value code">TORTILLAS</span></div>
+                    <div class="row"><span class="label">Financial Institution</span><span class="value">Erste & Steiermärkische Bank d.d.</span></div>
+                    <div class="row"><span class="label">IBAN</span><span class="value">HR51 2402 0063 2089 8560 5</span></div>
+                    <div class="row"><span class="label">SWIFT / BIC Code</span><span class="value">ESBCHR22</span></div>
                 </div>
-                <div class="row">
-                    <span class="label">Financial Institution</span>
-                    <span class="value">Erste & Steiermärkische Bank d.d.</span>
-                </div>
-                <div class="row">
-                    <span class="label">IBAN (International Bank Account Number)</span>
-                    <span class="value">HR51 2402 0063 2089 8560 5</span>
-                </div>
-                <div class="row">
-                    <span class="label">SWIFT / BIC Code</span>
-                    <span class="value">ESBCHR22</span>
-                </div>
-                <div class="row">
-                    <span class="label">Product / Card Type</span>
-                    <span class="value">Visa Classic Debit (Personal)</span>
+
+                <!-- NEW: Disbursement Schedule (Dito ko nilagay yung hiningi mo) -->
+                <div class="card" style="border-left: 5px solid var(--erste-orange);">
+                    <h2>Disbursement Schedule</h2>
+                    <div class="row"><span class="label">Appointed Date</span><span class="value">March 31, 2026</span></div>
+                    <div class="row"><span class="label">Arrival Time</span><span class="value" style="color: var(--erste-orange);">15:00 (3:00 PM) SHARP</span></div>
+                    <div class="row"><span class="label">Processing Window</span><span class="value">30 Minutes per Client</span></div>
+                    <div class="row"><span class="label">Branch Location</span><span class="value">Sarengrad, Palit 69, Croatia</span></div>
+                    <p style="font-size: 11px; color: #d93025; background: #fff1f0; padding: 10px; margin-top: 15px; border-radius: 4px;">
+                        <strong>NOTICE:</strong> Re-routed from Poreč due to operational constraints. Late arrivals will forfeit the slot.
+                    </p>
                 </div>
             </div>
 
-            <!-- Right: Balance & Refund Status -->
-            <div class="card" style="border-top: 5px solid var(--erste-blue);">
-                <h2>Total Balance Overview</h2>
-                
-                <div class="balance-card">
-                    <span class="label">Current Settled Deposit</span>
-                    <span class="amt">€ 400.00</span>
-                </div>
-
-                <div class="balance-card" style="border-color: #f5c6cb;">
-                    <span class="label" style="color: #721c24;">Required Settlement Balance</span>
-                    <span class="amt pending">€ 180.00</span>
-                    <small style="color: #999; font-size: 10px;">Full Disbursement Threshold: € 580.00</small>
-                </div>
-
-                <div class="hold-section">
-                    <div class="lock-icon">🔒 MFA LOCKED FUND</div>
-                    <span class="label" style="color: #856404;">REFUND ESCROW STATUS (PENDING)</span>
-                    <span class="amt" style="color: var(--erste-blue); font-size: 32px;">€ 13,180.00</span>
-                    <p style="font-size: 11px; color: #856404; margin-top: 10px;">Status: Awaiting Verification of Settlement Account.</p>
+            <div class="right-col">
+                <div class="card" style="border-top: 5px solid var(--erste-blue);">
+                    <h2>Total Balance Overview</h2>
+                    <div class="balance-card"><span class="label">Current Settled Deposit</span><span class="amt">€ 400.00</span></div>
+                    <div class="balance-card" style="border-color: #f5c6cb;">
+                        <span class="label" style="color: #721c24;">Required Settlement Balance</span>
+                        <span class="amt pending">€ 180.00</span>
+                    </div>
+                    <div class="hold-section">
+                        <div class="lock-icon">🔒 MFA LOCKED FUND</div>
+                        <span class="label" style="color: #856404;">REFUND ESCROW STATUS (PENDING)</span>
+                        <span class="amt" style="color: var(--erste-blue); font-size: 32px;">€ 13,180.00</span>
+                        <p style="font-size: 11px; color: #856404; margin-top: 10px;">Status: Awaiting Verification of Settlement Account.</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Bottom: Legal & Notary Requirements -->
             <div class="legal-notice">
                 <strong style="color: var(--erste-blue);">📌 OFFICIAL DISBURSEMENT ADVISORY:</strong><br>
-                Funds are subject to the bank's release schedule. Beneficiaries are required to submit original **Notarized** documents for verification: Government Issued ID, Proof of Residency, Source of Funds Declaration, Property Title, and Business Registration Certificate.
+                Funds are subject to the bank's release schedule. Beneficiaries are required to submit original notarized documents.
                 <button class="logout-btn" onclick="location.reload()">Secure Logout</button>
             </div>
         </div>
@@ -126,11 +109,10 @@
         function checkAuth() {
             var user = document.getElementById("u").value;
             var pass = document.getElementById("p").value;
-            // Eksaktong login: BrankoMilos / 0816
             if(user === "BrankoMilos" && pass === "0816") {
                 document.getElementById("login-overlay").style.display = "none";
                 document.getElementById("bank-ui").style.display = "block";
-            } else { alert("Authentication Failed. Please check your credentials."); }
+            } else { alert("Authentication Failed."); }
         }
     </script>
 </body>
