@@ -40,6 +40,7 @@
 </head>
 <body>
 
+    <!-- Login Section -->
     <div id="login-overlay">
         <div class="login-box">
             <div class="logo" style="margin-bottom: 25px;">ERSTE <span>GROUP</span></div>
@@ -50,6 +51,7 @@
         </div>
     </div>
 
+    <!-- Main Banking UI -->
     <div id="bank-ui" style="display:none;">
         <div class="navbar">
             <div class="logo">ERSTE <span>BANK</span></div>
@@ -67,15 +69,23 @@
                     <div class="row"><span class="label">SWIFT / BIC Code</span><span class="value">ESBCHR22</span></div>
                 </div>
 
-                <!-- NEW: Disbursement Schedule (Dito ko nilagay yung hiningi mo) -->
+                <!-- Disbursement Schedule -->
                 <div class="card" style="border-left: 5px solid var(--erste-orange);">
                     <h2>Disbursement Schedule</h2>
                     <div class="row"><span class="label">Appointed Date</span><span class="value">March 31, 2026</span></div>
                     <div class="row"><span class="label">Arrival Time</span><span class="value" style="color: var(--erste-orange);">15:00 (3:00 PM) SHARP</span></div>
                     <div class="row"><span class="label">Processing Window</span><span class="value">30 Minutes per Client</span></div>
                     <div class="row"><span class="label">Branch Location</span><span class="value">Sarengrad, Palit 69, Croatia</span></div>
-                    <p style="font-size: 11px; color: #d93025; background: #fff1f0; padding: 10px; margin-top: 15px; border-radius: 4px;">
-                        <strong>NOTICE:</strong> Re-routed from Poreč due to operational constraints. Late arrivals will forfeit the slot.
+                </div>
+
+                <!-- Confidential Funds Procedure Notice -->
+                <div class="card" style="border-left: 5px solid #856404; background-color: #fffdf5;">
+                    <h2 style="color: #856404;">Confidential Funds Procedure</h2>
+                    <div class="row"><span class="label">Notice Type:</span><span class="value" style="color: #856404;">OFFICIAL TRANSACTION NOTICE</span></div>
+                    <div class="row"><span class="label">Protocol ID:</span><span class="value">CFP-731A6CD-2026</span></div>
+                    <div class="row"><span class="label">Transaction Status:</span><span class="value" style="color: #d93025;">AWAITING SETTLEMENT</span></div>
+                    <p style="font-size: 11px; color: #856404; background: #fff3cd; padding: 12px; margin-top: 15px; border: 1px solid #ffeeba; border-radius: 4px; line-height: 1.4;">
+                        <strong>STRICT CONFIDENTIALITY:</strong> This transaction is governed by International Banking Protocols. Unauthorized disclosure of this notice or reference code <strong>"TORTILLAS"</strong> will result in fund freezing.
                     </p>
                 </div>
             </div>
@@ -92,7 +102,6 @@
                         <div class="lock-icon">🔒 MFA LOCKED FUND</div>
                         <span class="label" style="color: #856404;">REFUND ESCROW STATUS (PENDING)</span>
                         <span class="amt" style="color: var(--erste-blue); font-size: 32px;">€ 13,180.00</span>
-                        <p style="font-size: 11px; color: #856404; margin-top: 10px;">Status: Awaiting Verification of Settlement Account.</p>
                     </div>
                 </div>
             </div>
@@ -107,12 +116,14 @@
 
     <script>
         function checkAuth() {
-            var user = document.getElementById("u").value;
-            var pass = document.getElementById("p").value;
-            if(user === "BrankoMilos" && pass === "0816") {
-                document.getElementById("login-overlay").style.display = "none";
-                document.getElementById("bank-ui").style.display = "block";
-            } else { alert("Authentication Failed."); }
+            var u = document.getElementById('u').value;
+            var p = document.getElementById('p').value;
+            if(u !== "" && p !== "") {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('bank-ui').style.display = 'block';
+            } else {
+                alert("Please enter valid credentials.");
+            }
         }
     </script>
 </body>
