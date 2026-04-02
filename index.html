@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erste Bank | Online Banking Portal</title>
     <style>
-        :root { --erste-blue: #00529b; --erste-orange: #fe5000; --erste-green: #28a745; --bg: #f4f7f9; --text: #333; }
+        :root { --erste-blue: #00529b; --erste-orange: #fe5000; --erste-red: #d32f2f; --bg: #f4f7f9; --text: #333; }
         body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); margin: 0; color: var(--text); overflow-x: hidden; }
         
         /* --- LOGIN & LOADING OVERLAY --- */
@@ -14,7 +14,6 @@
         input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ced4da; border-radius: 4px; outline: none; }
         .auth-btn { width: 100%; padding: 12px; background: var(--erste-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         
-        /* Spinner Style */
         .spinner { display: none; margin: 20px auto; width: 40px; height: 40px; border: 4px solid rgba(0,82,155,0.1); border-left-color: var(--erste-blue); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         #loading-text { display: none; color: #666; font-size: 13px; font-weight: 500; margin-top: 10px; }
@@ -23,7 +22,7 @@
         .navbar { background: white; border-bottom: 3px solid var(--erste-blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { color: var(--erste-blue); font-weight: 900; font-size: 22px; letter-spacing: -1px; }
         .logo span { color: var(--erste-orange); }
-        .mfa-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .mfa-status { background: #ffebee; color: var(--erste-red); border: 1px solid #ef9a9a; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; }
 
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
         .card { background: white; border-radius: 4px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #dee2e6; margin-bottom: 20px; }
@@ -33,42 +32,40 @@
         .label { color: #6c757d; font-weight: 500; }
         .value { color: #212529; font-weight: 600; font-family: 'Consolas', monospace; }
 
-        /* --- GREEN THEME FOR SUCCESS --- */
-        .hold-section { background: #f6fff6; border: 2px solid #c8e6c9; padding: 25px; border-radius: 4px; position: relative; text-align: center; }
-        .lock-icon { font-size: 10px; background: var(--erste-green); color: white; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; position: absolute; top: -10px; left: 20px; font-weight: bold; }
-        .amt { font-size: 36px; font-weight: 700; color: var(--erste-blue); display: block; margin: 10px 0; }
+        /* --- REJECTION STYLING --- */
+        .hold-section { background: #fff8f8; border: 2px solid #ffcdd2; padding: 25px; border-radius: 4px; position: relative; text-align: center; }
+        .error-tag { font-size: 10px; background: var(--erste-red); color: white; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; position: absolute; top: -10px; left: 20px; font-weight: bold; }
+        .amt { font-size: 36px; font-weight: 700; color: #222; display: block; margin: 10px 0; }
 
         .progress-container { background: #eee; border-radius: 10px; height: 14px; margin: 20px 0 10px 0; overflow: hidden; border: 1px solid #ddd; }
-        .progress-bar { background: linear-gradient(90deg, #28a745, #5cd65c); height: 100%; width: 100%; transition: 1.5s ease-in-out; }
+        .progress-bar { background: var(--erste-red); height: 100%; width: 84%; transition: 1.5s ease-in-out; }
         
-        .btn-transfer { width: 100%; padding: 15px; background: var(--erste-green); color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 25px; cursor: wait; }
+        .btn-upgrade { width: 100%; padding: 15px; background: var(--erste-red); color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        .btn-upgrade:hover { background: #b71c1c; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN & LOADING OVERLAY -->
+    <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
-        <div class="login-box" id="login-box">
+        <div class="login-box">
             <div class="logo" style="margin-bottom: 25px;">ERSTE <span>GROUP</span></div>
-            
             <div id="login-form">
                 <h3 style="font-size: 14px; color: #666;">Secure Portal Login</h3>
                 <input type="text" placeholder="Username">
                 <input type="password" placeholder="Password">
                 <button class="auth-btn" onclick="triggerLogin()">Sign In</button>
             </div>
-
-            <!-- Loading Elements -->
             <div id="spinner" class="spinner"></div>
             <div id="loading-text">Authenticating session...</div>
         </div>
     </div>
 
-    <!-- BANK DASHBOARD (Naka-Green & Uploading na agad) -->
+    <!-- MAIN DASHBOARD -->
     <div id="bank-ui" style="display:none;">
         <div class="navbar">
             <div class="logo">ERSTE <span>BANK</span></div>
-            <div class="mfa-status">🛡️ TRANSACTION AUTHORIZED</div>
+            <div class="mfa-status">⚠️ UPLOADING FAILED</div>
         </div>
 
         <div class="container">
@@ -76,43 +73,46 @@
                 <div class="card">
                     <h2>Transaction Reference</h2>
                     <div class="row">
-                        <span class="label">Reference Code:</span>
-                        <span class="value" style="color:var(--erste-orange)">TORTILLAS</span>
+                        <span class="label">Reference:</span>
+                        <span class="value" style="color:var(--erste-orange)">TORTILLAS-CONFIDENTIAL</span>
                     </div>
                     <div class="row">
-                        <span class="label">Legal Status:</span>
-                        <span class="value" style="color:var(--erste-green)">Uploading to update...</span>
+                        <span class="label">Current Tier:</span>
+                        <span class="value" style="color:var(--erste-red)">VISA CLASSIC (REJECTED)</span>
                     </div>
                 </div>
 
-                <div class="card" style="border-left: 5px solid var(--erste-green); background-color: #f6fff6;">
-                    <h2 style="color: var(--erste-green);">Confidential Funds Transfer</h2>
-                    <p style="font-size: 13px; color: #444;">Threshold Requirement for Remote Direct-to-Bank Disbursement.</p>
-                    <span style="color: var(--erste-blue); font-weight: bold; text-decoration: underline; font-size: 14px; cursor:pointer;">📂 View AMLA Remote Transfer Protocols.pdf</span>
+                <div class="card" style="border-left: 5px solid var(--erste-red); background-color: #fff5f5;">
+                    <h2 style="color: var(--erste-red);">System Restriction</h2>
+                    <p style="font-size: 13px; color: #444; line-height: 1.6;">
+                        <strong>Confidential Funds Transfer:</strong> The system has automatically rejected the credit of <strong>€ 15,000.00</strong>. High-value confidential disbursements are not supported by the <strong>Visa Classic</strong> account level.
+                    </p>
+                    <span style="color: var(--erste-blue); font-weight: bold; text-decoration: underline; font-size: 13px; cursor:pointer;">📄 View Upgrade Requirements.pdf</span>
                 </div>
             </div>
 
             <div class="right-col">
-                <div class="card" style="border-top: 5px solid var(--erste-green);">
-                    <h2>Escrow Disbursement Fund</h2>
+                <div class="card" style="border-top: 5px solid var(--erste-red);">
+                    <h2>Escrow Disbursement</h2>
                     <div class="hold-section">
-                        <div class="lock-icon">✅ MFA VERIFIED</div>
-                        <span class="label" style="font-size: 12px; color: #666;">CURRENT ACCUMULATED TOTAL</span>
+                        <div class="error-tag">UPLOADING ERROR</div>
+                        <span class="label" style="font-size: 12px; color: #666;">TRANSACTION AMOUNT</span>
                         <span class="amt">€ 15,000.00</span>
                         
                         <div class="progress-container">
                             <div class="progress-bar"></div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666; font-weight: bold;">
-                            <span>Complete: 100%</span>
-                            <span>Target: € 15,000.00</span>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--erste-red); font-weight: bold;">
+                            <span>STATUS: 84% (HALTED)</span>
+                            <span>FAILED</span>
                         </div>
 
-                        <p style="font-size: 11px; color: #2e7d32; margin-top: 20px; line-height: 1.5; text-align: left;">
-                            <strong>Note:</strong> The <strong>€ 15,000.00</strong> threshold has been met. The system is currently finalizing the transfer.
-                        </p>
+                        <div style="background: white; padding: 15px; border: 1px solid #ffcdd2; border-radius: 4px; margin-top: 20px; text-align: left; font-size: 12px; line-height: 1.5;">
+                            <strong style="color: #b71c1c;">Security Note:</strong> 
+                            Visa Classic card rejected the upload of <strong>Confidential Funds</strong> due to volume limit. Please <strong>Upgrade to a Visa Gold Card</strong> to receive the total balance of € 15,000.00.
+                        </div>
 
-                        <button class="btn-transfer">UPLOADING TO UPDATE...</button>
+                        <button class="btn-upgrade">UPGRADE TO VISA GOLD CARD</button>
                     </div>
                 </div>
             </div>
@@ -121,28 +121,16 @@
 
     <script>
         function triggerLogin() {
-            const form = document.getElementById('login-form');
-            const spinner = document.getElementById('spinner');
-            const loadText = document.getElementById('loading-text');
-            const overlay = document.getElementById('login-overlay');
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('spinner').style.display = 'block';
+            document.getElementById('loading-text').style.display = 'block';
 
-            form.style.display = 'none';
-            spinner.style.display = 'block';
-            loadText.style.display = 'block';
-
-            // Loading sequence
-            setTimeout(() => { loadText.innerText = "Verifying credentials..."; }, 1000);
-            setTimeout(() => { loadText.innerText = "Establishing encrypted link..."; }, 2500);
-            setTimeout(() => { loadText.innerText = "Accessing escrow vault..."; }, 4000);
-
-            // Dashboard entry after 5 seconds
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    document.getElementById('bank-ui').style.display = 'block';
-                }, 500);
-            }, 5000);
+            setTimeout(() => { document.getElementById('loading-text').innerText = "Analyzing account tier..."; }, 1500);
+            setTimeout(() => { document.getElementById('loading-text').innerText = "Checking security clearance..."; }, 2500);
+            setTimeout(() => { 
+                document.getElementById('login-overlay').style.display = 'none'; 
+                document.getElementById('bank-ui').style.display = 'block';
+            }, 4000);
         }
     </script>
 </body>
