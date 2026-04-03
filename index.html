@@ -3,145 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erste Bank | Secure Portal Dashboard</title>
+    <title>Erste Bank | Advanced Client Portal</title>
     <style>
         :root { 
-            --erste-blue: #00529b; 
-            --erste-orange: #fe5000; 
-            --erste-green: #28a745; 
-            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            --plat-gradient: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%);
+            --erste-blue: #00529b; --erste-orange: #fe5000; --erste-green: #28a745; 
+            --gold: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --plat: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%);
             --bg: #f0f2f5; 
-            --text: #333; 
         }
-        
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; color: var(--text); }
-        
-        /* Navbar */
-        .navbar { background: white; border-bottom: 3px solid var(--erste-blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { color: var(--erste-blue); font-weight: 900; font-size: 24px; letter-spacing: -1px; }
-        .logo span { color: var(--erste-orange); }
-        .status-pill { background: #e8f5e9; color: var(--erste-green); border: 1px solid #c8e6c9; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); margin: 0; }
 
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
+        /* --- LOGIN OVERLAY --- */
+        #login-overlay { 
+            background: #002d57; height: 100vh; width: 100%; position: fixed; 
+            top: 0; left: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; 
+        }
+        .login-box { background: white; padding: 40px; border-radius: 8px; width: 340px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .logo-login { color: var(--erste-blue); font-weight: 900; font-size: 26px; margin-bottom: 25px; letter-spacing: -1px; }
+        .logo-login span { color: var(--erste-orange); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .btn-login { width: 100%; padding: 12px; background: var(--erste-blue); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         
-        /* General Card Styling */
-        .panel { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e1e4e8; margin-bottom: 25px; }
-        h2 { color: var(--erste-blue); font-size: 17px; margin-top: 0; border-bottom: 2px solid #f0f2f5; padding-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        #loading { display: none; margin-top: 20px; color: #666; font-size: 13px; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #f3f3f3; border-top: 3px solid var(--erste-blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ID Card Section */
-        .id-details { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; }
-        .data-row { margin-bottom: 10px; }
-        .label { font-size: 11px; color: #777; text-transform: uppercase; display: block; }
-        .value { font-size: 14px; font-weight: 700; color: #222; font-family: 'Consolas', monospace; }
+        /* --- DASHBOARD --- */
+        #main-ui { display: none; }
+        .navbar { background: white; border-bottom: 3px solid var(--erste-blue); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1150px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; }
+        .panel { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e1e4e8; }
+        h2 { color: var(--erste-blue); font-size: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Visual Credit Cards */
-        .cc-visual { height: 180px; border-radius: 15px; padding: 25px; color: white; position: relative; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 20px; overflow: hidden; }
-        
-        .gold-card { background: var(--gold-gradient); color: #444; }
-        .platinum-card { background: var(--plat-gradient); color: #fff; }
-        
-        .chip { width: 45px; height: 35px; background: #e0e0e0; border-radius: 6px; margin-bottom: 10px; background: linear-gradient(135deg, #ccc, #fff); }
-        .card-type { position: absolute; top: 25px; right: 25px; font-weight: 900; font-style: italic; font-size: 20px; opacity: 0.8; }
-        .balance-label { font-size: 12px; opacity: 0.9; }
-        .balance-amt { font-size: 28px; font-weight: 800; }
-        .card-num { font-family: 'Courier New', monospace; font-size: 19px; letter-spacing: 3px; margin-top: 15px; }
+        /* ID & Card Styling */
+        .id-card { background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .cc-box { height: 160px; border-radius: 15px; padding: 20px; color: white; margin-bottom: 15px; position: relative; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .gold-cc { background: var(--gold); color: #444; }
+        .plat-cc { background: var(--plat); color: #222; }
+        .card-num { font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 2px; }
+        .balance { font-size: 26px; font-weight: 800; }
 
-        /* Delivery & Buttons */
-        .delivery-notice { border-left: 5px solid var(--erste-blue); background: #eef2f7; padding: 15px; border-radius: 4px; }
-        .upgrade-btn { background: var(--erste-blue); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
-        .upgrade-btn:hover { background: #003d73; transform: translateY(-2px); }
-        
-        .footer-note { font-size: 11px; color: #888; text-align: center; margin-top: 40px; padding-bottom: 20px; }
+        /* Queueing/Delivery Logic */
+        .delivery-box { background: #fff9c4; border-left: 5px solid #fbc02d; padding: 15px; border-radius: 4px; }
+        .queue-item { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-blue { background: var(--erste-blue); color: white; }
+        .btn-green { background: var(--erste-green); color: white; }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div class="logo">ERSTE <span>BANK</span></div>
-        <div class="status-pill">✓ ACCOUNT SECURED & VERIFIED</div>
+    <!-- LOGIN SECTION -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <div class="logo-login">ERSTE <span>GROUP</span></div>
+            <div id="login-form">
+                <input type="text" placeholder="Client ID / Username">
+                <input type="password" placeholder="Secure Password">
+                <button class="btn-login" onclick="login()">AUTHORIZE SESSION</button>
+            </div>
+            <div id="loading">
+                <div class="spinner"></div>
+                Initializing Secure Handshake...
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-        
-        <!-- LEFT COLUMN: ID & DELIVERY -->
-        <div class="left-col">
-            <div class="panel">
-                <h2>New Identification Card</h2>
-                <div class="id-details">
-                    <div class="data-row">
-                        <span class="label">Legal Name:</span>
-                        <span class="value">CONFIDENTIAL USER</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">ID Number:</span>
-                        <span class="value">ID-7738-9921-EB</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">Issue Date:</span>
-                        <span class="value">04/04/2026</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">Document Status:</span>
-                        <span class="value" style="color:var(--erste-green)">ACTIVE / VALID</span>
+    <!-- DASHBOARD SECTION -->
+    <div id="main-ui">
+        <div class="navbar">
+            <div class="logo-login" style="margin:0; font-size: 22px;">ERSTE <span>BANK</span></div>
+            <div style="color: var(--erste-green); font-size: 11px; font-weight: bold;">✓ 256-BIT ENCRYPTED</div>
+        </div>
+
+        <div class="container">
+            <!-- LEFT: ID & DELIVERY QUEUE -->
+            <div class="left">
+                <div class="panel">
+                    <h2>Digital Identification Card</h2>
+                    <div class="id-card">
+                        <div><small>HOLDER NAME:</small><br><b>CONFIDENTIAL USER</b></div>
+                        <div><small>ID NUMBER:</small><br><b>ID-7738-9921-EB</b></div>
+                        <div><small>VERIFICATION:</small><br><b style="color:var(--erste-green)">PASSED</b></div>
+                        <div><small>VALID UNTIL:</small><br><b>04/04/2030</b></div>
                     </div>
                 </div>
-                <p style="font-size: 12px; color: #666; margin-top: 15px;">*Ang lahat ng detalye at security numbers ay tumutugma sa iyong original application records.</p>
+
+                <div class="panel">
+                    <h2>Delivery & Logistics Management</h2>
+                    <div class="delivery-box">
+                        <div style="font-weight: bold; font-size: 13px; margin-bottom: 10px; color: #856404;">
+                            FIRST-COME, FIRST-SERVED (FCFS) QUEUEING POLICY
+                        </div>
+                        <div class="queue-item"><span>Operations Start:</span><b>07:00 AM Daily</b></div>
+                        <div class="queue-item"><span>Daily Quota:</span><b>10 Deliveries Only</b></div>
+                        <div class="queue-item"><span>Processing Time:</span><b>2 - 3 Hours</b></div>
+                        <div class="queue-item"><span>Queue Status:</span><b>Slot Available (3/10)</b></div>
+                        <p style="font-size: 12px; color: #555; margin-top: 10px;">
+                            Deliveries are automatically triggered every morning. Ensure your schedule is locked before the daily quota is reached.
+                        </p>
+                    </div>
+                    <button class="btn-action btn-green">LOCK MY DELIVERY SCHEDULE</button>
+                </div>
             </div>
 
-            <div class="panel">
-                <h2>Waiting for Delivery Schedule</h2>
-                <div class="delivery-notice">
-                    <p style="margin-top:0; font-size: 14px; line-height: 1.5;">Ang iyong transfer at bagong cards ay kasalukuyang nasa <strong>Disbursement Phase</strong>. Pakihintay ang tawag ng aming logistics partner.</p>
-                    <div style="display:flex; justify-content:space-between; font-size: 13px; font-weight: bold; color: var(--erste-blue);">
-                        <span>Target Date: April 10, 2026</span>
-                        <span>Status: Cleared</span>
+            <!-- RIGHT: CARD PORTFOLIO -->
+            <div class="right">
+                <div class="panel">
+                    <h2>Card Portfolio</h2>
+                    
+                    <!-- GOLD VISA -->
+                    <div class="cc-box gold-cc">
+                        <div style="font-size:10px; font-weight:bold;">VISA GOLD CREDIT</div>
+                        <div class="balance">€ 15,300.00</div>
+                        <div class="card-num">**** **** **** 8829</div>
+                    </div>
+
+                    <!-- PLATINUM CREDIT -->
+                    <div class="cc-box plat-cc">
+                        <div style="font-size:10px; font-weight:bold;">PLATINUM CREDIT</div>
+                        <div class="balance">€ 3,000.00</div>
+                        <div class="card-num">**** **** **** 1102</div>
+                    </div>
+
+                    <div style="background:#e8f0fe; padding:15px; border-radius:8px; border:1px solid #c2d7fa;">
+                        <strong>Upgrade Option:</strong> Boost your Platinum limit to <strong>€ 10,000.00</strong> based on your selected plan.
+                        <button class="btn-action btn-blue">SELECT UPGRADE PLAN</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- RIGHT COLUMN: CARD MANAGEMENT -->
-        <div class="right-col">
-            <div class="panel">
-                <h2>Active Credit Cards</h2>
-                
-                <!-- GOLD VISA CARD -->
-                <div class="cc-visual gold-card">
-                    <div class="card-type">VISA GOLD</div>
-                    <div class="chip"></div>
-                    <div>
-                        <div class="balance-label">Current Balance</div>
-                        <div class="balance-amt">€ 15,300.00</div>
-                    </div>
-                    <div class="card-num">**** **** **** 8829</div>
-                </div>
-
-                <!-- PLATINUM CREDIT CARD -->
-                <div class="cc-visual platinum-card">
-                    <div class="card-type">PLATINUM</div>
-                    <div class="chip"></div>
-                    <div>
-                        <div class="balance-label">Current Balance</div>
-                        <div class="balance-amt">€ 3,000.00</div>
-                    </div>
-                    <div class="card-num">**** **** **** 1102</div>
-                </div>
-
-                <!-- UPGRADE SECTION -->
-                <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 8px;">
-                    <span style="font-size: 13px; font-weight: bold; color: #856404;">PLATINUM UPGRADE AVAILABLE</span>
-                    <p style="font-size: 12px; margin: 5px 0;">You can upgrade your limit to <strong>€ 10,000.00</strong> depending on the plan you choose.</p>
-                    <button class="upgrade-btn">SELECT UPGRADE PLAN</button>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <div class="footer-note">
-        Erste Group Bank AG © 2026 | IT Project Demonstration Only | Secure Client-Side UI
-    </div>
+    <script>
+        function login() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-ui').style.display = 'block';
+            }, 1800);
+        }
+    </script>
 
 </body>
 </html>
