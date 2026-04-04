@@ -13,8 +13,8 @@
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; color: #333; overflow-x: hidden; }
 
-        /* --- AUTHENTICATION SCREENS --- */
-        .auth-screen { height: 100vh; width: 100%; position: fixed; top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: #002d57; transition: 0.5s; }
+        /* --- AUTH SCREENS --- */
+        .auth-screen { height: 100vh; width: 100%; position: fixed; top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: #002d57; }
         .auth-box { background: white; padding: 40px; border-radius: 12px; width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         .logo-head { color: var(--erste-blue); font-weight: 900; font-size: 28px; margin-bottom: 25px; letter-spacing: -1px; }
         .logo-head span { color: var(--erste-orange); }
@@ -33,32 +33,32 @@
         
         h2 { color: var(--erste-blue); font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
         
-        /* Digital ID Styling */
+        /* MFA Subscription Banner */
+        .mfa-banner { background: #e8f5e9; border: 2px solid var(--erste-green); border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .timer-text { font-family: 'Courier New', monospace; font-size: 20px; font-weight: 900; color: #1b5e20; background: #fff; padding: 8px 12px; border-radius: 5px; border: 1px solid #c8e6c9; }
+
         .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .id-label { font-size: 10px; color: #718096; text-transform: uppercase; }
         .id-value { font-size: 13px; font-weight: 700; display: block; }
-        .total-row { border-top: 1px solid #eee; padding-top: 15px; font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; }
 
-        /* Card Portfolio Styling */
-        .card { height: 175px; border-radius: 18px; padding: 25px; color: white; margin-bottom: 20px; position: relative; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+        .card { height: 175px; border-radius: 18px; padding: 25px; color: white; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
         .visa-gold { background: var(--gold); color: #3e2723; }
         .visa-plat { background: var(--plat); color: #1a1a1a; }
         .card-num { font-family: 'Courier New', monospace; font-size: 19px; letter-spacing: 2px; font-weight: bold; }
         .balance { font-size: 30px; font-weight: 900; }
 
-        /* Logistics Styling */
         .status-box { background: #fff9c4; border: 2px dashed #fbc02d; padding: 20px; border-radius: 10px; text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 20px; }
-        .btn-green { width: 100%; padding: 16px; background: var(--erste-green); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        .btn-green { width: 100%; padding: 16px; background: var(--erste-green); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- 1. INITIAL LOGIN -->
+    <!-- 1. LOGIN -->
     <div id="screen-login" class="auth-screen">
         <div class="auth-box">
             <div class="logo-head">ERSTE <span>BANK</span></div>
-            <input type="text" placeholder="Client Identification Number">
-            <input type="password" placeholder="Access Password">
+            <input type="text" placeholder="Client ID">
+            <input type="password" placeholder="Password">
             <button class="btn-blue" onclick="toMFA()">SIGN IN</button>
         </div>
     </div>
@@ -67,10 +67,9 @@
     <div id="screen-mfa" class="auth-screen" style="display:none;">
         <div class="auth-box">
             <div class="logo-head">MFA <span>SECURE</span></div>
-            <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Security Check Required</p>
-            <p style="font-size: 14px; font-weight: 600;">Confirm MFA Automatic Registration</p>
+            <p style="font-size: 14px; font-weight: 600;">Activate Subscription</p>
             <button class="fingerprint-btn" onclick="toDashboard()">☝️</button>
-            <p style="font-size: 11px; color: var(--erste-blue); font-weight: 800; letter-spacing: 1px;">TOUCH SENSOR TO VERIFY</p>
+            <p style="font-size: 11px; color: var(--erste-blue); font-weight: 800;">SCAN FINGERPRINT</p>
         </div>
     </div>
 
@@ -78,54 +77,46 @@
     <div id="dashboard-ui">
         <div class="navbar">
             <div class="logo-head" style="font-size: 22px; margin:0;">ERSTE <span>BANK</span></div>
-            <div style="color: var(--erste-green); font-size: 10px; font-weight: bold;">✓ BIOMETRIC MFA ENCRYPTED SESSION</div>
+            <div style="color: var(--erste-green); font-size: 10px; font-weight: bold;">✓ MFA SUBSCRIPTION ACTIVE</div>
         </div>
 
         <div class="container">
-            <!-- Left Side -->
-            <div class="left-segment">
-                <div class="panel">
-                    <h2>Digital Identification Module</h2>
-                    <div class="id-grid">
-                        <div><span class="id-label">Account Holder:</span><span class="id-value">CONFIDENTIAL USER</span></div>
-                        <div><span class="id-label">ID Reference:</span><span class="id-value">ID-7738-9921-EB</span></div>
-                        <div><span class="id-label">Verification:</span><span class="id-value" style="color:var(--erste-green)">SECURITY CLEARED</span></div>
-                        <div><span class="id-label">Expiry Date:</span><span class="id-value">APRIL 04, 2030</span></div>
-                    </div>
-                    <div style="font-size: 14px; margin-bottom: 10px;">
-                        MFA Automatic register for 5days <span style="float:right">€ 580.00</span>
-                    </div>
-                    <div class="total-row">
-                        <span>TOTAL</span>
-                        <span>€ 1,330.00</span>
-                    </div>
-                    <p style="font-size: 11px; color: #888; font-style: italic; margin-top: 15px;">
-                        *Ang bayad ay awtomatikong papasok sa bank system para sa security purpose.
-                    </p>
+            <div class="left">
+                <!-- COUNTDOWN TIMER -->
+                <div class="mfa-banner">
+                    <div><b style="color:var(--erste-green); font-size:12px;">MFA SUBSCRIPTION</b><br><small>Security Validity</small></div>
+                    <div id="timer" class="timer-text">04:15:00:00</div>
                 </div>
 
                 <div class="panel">
-                    <h2>Logistics & Queueing</h2>
+                    <h2>Digital Identification Module</h2>
+                    <div class="id-grid">
+                        <div><span class="id-label">Holder:</span><span class="id-value">CONFIDENTIAL USER</span></div>
+                        <div><span class="id-label">Reference:</span><span class="id-value">ID-7738-9921-EB</span></div>
+                        <div><span class="id-label">Status:</span><span class="id-value" style="color:var(--erste-green)">CLEARED</span></div>
+                        <div><span class="id-label">Expiry:</span><span class="id-value">APRIL 04, 2030</span></div>
+                    </div>
+                    <p>MFA Registration: <b>€ 580</b></p>
+                    <p style="font-size: 22px; font-weight: 900; color: var(--erste-blue);">total € 1,330</p>
+                    <p style="font-size: 11px; color:#888; font-style:italic;">*Bayad ay awtomatikong papasok sa bank system.</p>
+                </div>
+
+                <div class="panel">
                     <div class="status-box">Delivery Pending € 750</div>
                     <button class="btn-green">LOCK DELIVERY SCHEDULE</button>
                 </div>
             </div>
 
-            <!-- Right Side -->
-            <div class="right-segment">
+            <div class="right">
                 <div class="panel">
-                    <h2>Active Card Portfolio</h2>
-                    
-                    <!-- Gold Card -->
+                    <h2>Card Portfolio</h2>
                     <div class="card visa-gold">
-                        <span style="font-size: 10px; font-weight: 800; letter-spacing: 1px;">VISA GOLD CREDIT</span>
+                        <span style="font-size:10px; font-weight:800;">VISA GOLD CREDIT</span>
                         <div class="balance">€ 16,730.00</div>
                         <div class="card-num">4627 6539 1972 9328</div>
                     </div>
-
-                    <!-- Platinum Card -->
                     <div class="card visa-plat">
-                        <span style="font-size: 10px; font-weight: 800; letter-spacing: 1px;">PLATINUM CREDIT</span>
+                        <span style="font-size:10px; font-weight:800;">PLATINUM CREDIT</span>
                         <div class="balance">€ 3,000.00</div>
                         <div class="card-num">4084 8663 1028 8860</div>
                     </div>
@@ -135,14 +126,20 @@
     </div>
 
     <script>
-        function toMFA() {
-            document.getElementById('screen-login').style.display = 'none';
-            document.getElementById('screen-mfa').style.display = 'flex';
+        function toMFA() { document.getElementById('screen-login').style.display='none'; document.getElementById('screen-mfa').style.display='flex'; }
+        function toDashboard() { 
+            document.getElementById('screen-mfa').style.display='none'; 
+            document.getElementById('dashboard-ui').style.display='block'; 
+            startTimer(); 
         }
 
-        function toDashboard() {
-            document.getElementById('screen-mfa').style.display = 'none';
-            document.getElementById('dashboard-ui').style.display = 'block';
+        function startTimer() {
+            let d = 4, h = 15, m = 0, s = 0;
+            const timer = document.getElementById('timer');
+            setInterval(() => {
+                if (s > 0) s--; else { s = 59; if (m > 0) m--; else { m = 59; if (h > 0) h--; else { h = 23; if (d > 0) d--; } } }
+                timer.innerText = `${String(d).padStart(2,'0')}:${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
         }
     </script>
 </body>
