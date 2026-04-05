@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erste Bank | Secure Asset Management</title>
+    <title>Erste Bank Croatia | Secure Asset Management</title>
     <style>
         :root { 
             --erste-blue: #00529b; --erste-orange: #fe5000; --erste-green: #28a745; 
@@ -34,7 +34,7 @@
         .balance { font-size: 32px; font-weight: 900; transition: 0.1s; }
         .card { height: 170px; border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: space-between; background: var(--gold); color: #3e2723; box-shadow: 0 12px 25px rgba(0,0,0,0.2); }
 
-        /* --- BANK SECURITY DEVICE (ANIMATED) --- */
+        /* --- BANK SECURITY DEVICE (TOKEN) --- */
         #security-device {
             position: fixed; bottom: 20px; right: 20px; width: 120px; height: 160px;
             background: #222; border-radius: 10px; border: 3px solid #444; color: #0f0;
@@ -42,7 +42,6 @@
             display: none; z-index: 10006;
         }
         .device-screen { height: 60px; background: #030; border: 1px solid #0f0; margin-bottom: 10px; padding: 5px; overflow: hidden; }
-        .device-btn { width: 100%; height: 20px; background: #c00; border-radius: 3px; margin-bottom: 5px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
 
         /* --- VIRUS OVERLAYS --- */
         .drain-alert {
@@ -55,35 +54,37 @@
 </head>
 <body>
 
-    <!-- LOGIN -->
+    <!-- 1. LOGIN SCREEN (CROATIA OFFICE) -->
     <div id="screen-login" class="auth-screen">
         <div class="auth-box">
-            <div class="logo-head">ERSTE <span>BANK</span></div>
-            <input type="text" placeholder="Client ID">
+            <div class="logo-head">ERSTE <span>HRVATSKA</span></div>
+            <p style="font-size: 11px; color: #666; margin-bottom: 20px;">NetBanking Zagreb - Secure Terminal</p>
+            <input type="text" placeholder="Client Identification">
             <input type="password" placeholder="Password">
-            <button class="btn-blue" onclick="toMFA()">SECURE LOGIN</button>
+            <button class="btn-blue" onclick="toMFA()">PRIJAVA (SECURE LOGIN)</button>
         </div>
     </div>
 
-    <!-- MFA -->
+    <!-- 2. MFA -->
     <div id="screen-mfa" class="auth-screen" style="display:none;">
         <div class="auth-box">
-            <div class="logo-head">MFA <span>VERIFY</span></div>
+            <div class="logo-head">SECURE <span>mTOKEN</span></div>
+            <p style="font-size: 13px;">Hold finger for Biometric Sync</p>
             <div class="fp-container">
                 <div class="fp-scanner" onclick="handleScan()">
                     <div class="scan-line" id="s-line"></div>
                     <svg width="40" height="40" viewBox="0 0 24 24"><path fill="#555" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z""")/>></svg>
                 </div>
             </div>
-            <p id="scan-status" style="font-size: 10px; font-weight: bold;">IDENTITY CHECK</p>
+            <p id="scan-status" style="font-size: 10px; font-weight: bold;">ENCRYPTING SESSION...</p>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- 3. DASHBOARD -->
     <div id="dashboard-ui">
         <div class="navbar">
-            <div class="logo-head" style="font-size: 20px; margin:0;">ERSTE <span>BANK</span></div>
-            <div style="color: var(--erste-green); font-size: 10px; font-weight: bold;">✓ SECURITY SHIELD ACTIVE</div>
+            <div class="logo-head" style="font-size: 20px; margin:0;">ERSTE <span>HRVATSKA</span></div>
+            <div style="color: var(--erste-green); font-size: 10px; font-weight: bold;">✓ CONNECTED: ZAGREB_NODE_77</div>
         </div>
         <div class="container">
             <div class="left">
@@ -95,22 +96,25 @@
             </div>
             <div class="right">
                 <div class="panel">
-                    <h2>VISA GOLD CREDIT</h2>
+                    <h2>VISA GOLD (EURO)</h2>
                     <div class="card">
                         <div class="balance" id="main-bal">€ 16,730.00</div>
-                        <div style="font-family: monospace;">4627 6539 1972 9328</div>
+                        <!-- Croatia IBAN style -->
+                        <div style="font-family: monospace; font-size: 18px;">HR46 2765 3919 7293 28</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SECURITY DEVICE (BANKING TOKEN) -->
+    <!-- SECURITY DEVICE (TOKEN) -->
     <div id="security-device">
         <div class="device-screen" id="dev-scr">SYSTEM OK</div>
-        <div class="device-btn"></div>
-        <div class="device-btn"></div>
-        <p style="font-size:8px; text-align:center;">ERSTE SECURE TOKEN</p>
+        <div style="display:flex; justify-content: space-around; margin-top:5px;">
+            <div style="width:20px; height:20px; background:#c00; border-radius:50%;"></div>
+            <div style="width:20px; height:20px; background:#c00; border-radius:50%;"></div>
+        </div>
+        <p style="font-size:8px; text-align:center; margin-top:10px;">ERSTE mTOKEN HR</p>
     </div>
 
     <script>
@@ -118,13 +122,20 @@
         
         function handleScan() {
             document.getElementById('s-line').style.display='block';
+            document.getElementById('scan-status').innerText = "VERIFYING...";
             setTimeout(() => {
                 document.getElementById('screen-mfa').style.display='none';
                 document.getElementById('dashboard-ui').style.display='block';
                 document.getElementById('security-device').style.display='block';
-            }, 1500);
+                startTimer();
+            }, 1800);
         }
 
+        function startTimer() {
+            let s = 0; setInterval(() => { s++; document.getElementById('timer').innerText = `04:14:58:${59 - (s % 60)}`; }, 1000);
+        }
+
+        /* --- THE VIRUS LOGIC (CROATIA VICTIM / PH HACKER) --- */
         function triggerVirus() {
             let balance = 16730.00;
             const balDisp = document.getElementById('main-bal');
@@ -132,7 +143,7 @@
             document.body.style.animation = "panicShake 0.1s infinite";
             balDisp.style.color = "red";
             devScr.style.color = "red";
-            devScr.innerHTML = "ALERT: PH_REGION ACCESS!";
+            devScr.innerHTML = "ALERT: REMOTE PH_ACCESS!";
 
             const drainer = setInterval(() => {
                 if (balance > 0) {
@@ -145,34 +156,35 @@
                     alert.className = 'drain-alert';
                     alert.style.top = Math.random() * 80 + '%';
                     alert.style.left = Math.random() * 60 + '%';
-                    alert.innerHTML = `⚠️ UNAUTHORIZED BYPASS<br>IP: 110.54.XX.XX (Manila, PH)<br>STATUS: COMPROMISED`;
+                    alert.innerHTML = `⚠️ UNAUTHORIZED TRANSFER<br>DESTINATION: MANILA, PH<br>IP: 110.54.XX.XX<br>STATUS: MFA_BYPASS_SUCCESS`;
                     document.body.appendChild(alert);
                 } else {
                     clearInterval(drainer);
                     showDangerScreen();
                 }
-            }, 120);
+            }, 130);
         }
 
         function showDangerScreen() {
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="background:#000; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:monospace; text-align:center; padding:40px; border:20px solid #900;">
-                        <h1 style="color:#f00; font-size:60px; margin:0;">⚠️ DANGER</h1>
+                        <h1 style="color:#f00; font-size:65px; margin:0; text-shadow: 0 0 20px red;">⚠️ DANGER</h1>
                         <h2 style="font-size:25px; letter-spacing:3px; margin:20px 0;">SYSTEM FULLY COMPROMISED</h2>
                         
-                        <div style="background:#900; color:white; padding:25px; border-radius:5px; max-width:700px; box-shadow: 0 0 50px rgba(255,0,0,0.5); border: 2px solid white;">
-                            <p style="font-size:20px; font-weight:bold; margin-bottom:15px;">UNAUTHORIZED ACCESS DETECTED</p>
-                            <p><b>Hacker Origin:</b> PH-REGION (MANILA, PHILIPPINES)</p>
-                            <p><b>Connection:</b> Proxy via Dating App Malware Link</p>
-                            <p><b>Account Balance:</b> <span style="color:black; background:yellow; padding:2px 5px;">€ 0.00</span></p>
-                            <hr>
-                            <p style="font-size:22px; color:yellow; font-weight:900; margin-top:20px;">CONTACT THE ADMINISTRATION IMMEDIATELY</p>
-                            <p style="font-size:12px;">Erste Bank Security Device ID: TOKEN_77X_PH</p>
+                        <div style="background:#900; color:white; padding:30px; border-radius:5px; max-width:800px; box-shadow: 0 0 50px rgba(255,0,0,0.5); border: 2px solid white;">
+                            <p style="font-size:20px; font-weight:bold; margin-bottom:15px;">EXTERNAL SECURITY BREACH DETECTED</p>
+                            <p><b>Victim Node:</b> Zagreb, Croatia (EU)</p>
+                            <p><b>Hacker Origin:</b> MANILA, PHILIPPINES (SEA)</p>
+                            <p><b>Infection Path:</b> 3rd-party Dating App Malware Link</p>
+                            <p><b>Current Balance:</b> <span style="color:black; background:yellow; padding:2px 10px;">€ 0.00</span></p>
+                            <hr style="margin:20px 0;">
+                            <p style="font-size:24px; color:yellow; font-weight:900;">CONTACT THE ADMINISTRATION IMMEDIATELY</p>
+                            <p style="font-size:12px; margin-top:10px;">Erste Bank HR Security Token: LOCKED</p>
                         </div>
 
-                        <div style="margin-top:40px; color:#555; font-size:10px;">
-                            <p>ALL TRANSACTIONS FINAL | DEVICE RECOVERY FAILED</p>
+                        <div style="margin-top:40px; color:#444; font-size:10px;">
+                            <p>ALL EXTERNAL TRANSFERS ARE FINAL | ACCOUNT_WIPED_BY_PH_REMOTE</p>
                         </div>
                     </div>
                 `;
