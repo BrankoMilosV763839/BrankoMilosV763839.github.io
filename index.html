@@ -8,11 +8,11 @@
         :root { --erste-blue: #00529b; --erste-orange: #fe5000; --bg: #f4f7f9; }
         * { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
         input { user-select: auto !important; }
-
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; overflow: hidden; }
 
-        /* --- LOGIN SCREEN --- */
         .screen { height: 100vh; width: 100%; position: fixed; top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        
+        /* --- LOGIN SCREEN --- */
         .auth-box { background: white; padding: 40px; border-radius: 12px; width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .logo-head { color: var(--erste-blue); font-weight: 900; font-size: 26px; margin-bottom: 20px; }
         .logo-head span { color: var(--erste-orange); }
@@ -20,30 +20,37 @@
         .btn-blue { width: 100%; padding: 14px; background: var(--erste-blue); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         #login-error { color: red; font-size: 12px; margin-bottom: 10px; display: none; }
 
-        /* --- FINGERPRINT SCANNER & SIDEBAR --- */
+        /* --- CIRCLE LOADING (UMIIKOT) --- */
+        #screen-loading { display: none; background: white; flex-direction: column; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--erste-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- FINGERPRINT SCANNER --- */
         #screen-mfa { background: #001a33; display: none; }
         .fp-scanner { 
             width: 110px; height: 110px; border: 3px solid #333; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #000; 
-            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #000; cursor: pointer;
         }
         .scan-line { position: absolute; width: 100%; height: 5px; background: #0ff; top: 0; display: none; animation: scanMove 2s infinite linear; box-shadow: 0 0 15px #0ff; }
         @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
 
         #scammer-sidebar {
             position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
-            width: 280px; font-family: 'Courier New', monospace; color: #0f0; font-size: 13px; 
-            text-align: left; z-index: 10000; pointer-events: none; display: none;
+            width: 280px; font-family: 'Courier New', monospace; color: #0f0; font-size: 13px; text-align: left; display: none;
         }
-        .chat-msg { margin-bottom: 8px; opacity: 0; animation: fadeIn 0.8s forwards; border-left: 2px solid #0f0; padding-left: 10px; text-shadow: 0 0 5px #0f0; }
-        .threat-msg { color: #f00; font-weight: 900; text-transform: uppercase; border-left: 2px solid #f00; text-shadow: 0 0 5px #f00; }
+        .chat-msg { margin-bottom: 8px; opacity: 0; animation: fadeIn 0.8s forwards; border-left: 2px solid #0f0; padding-left: 10px; }
+        .threat-msg { color: #f00; font-weight: 900; border-left: 2px solid #f00; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- REALISTIC DANGER UI --- */
+        /* --- DANGER UI --- */
         #danger-ui { 
-            display: none; background-color: #050000; 
-            background-image: radial-gradient(#300 1px, transparent 1px); background-size: 25px 25px;
-            color: #fff; flex-direction: column; align-items: center; justify-content: center;
+            display: none; background-color: #050000; color: #fff; flex-direction: column; align-items: center; justify-content: center;
             border: 15px solid #600; box-sizing: border-box; animation: bgPulse 3s infinite alternate;
         }
         @keyframes bgPulse { from { border-color: #400; } to { border-color: #900; } }
@@ -67,37 +74,37 @@
         </div>
     </div>
 
-    <!-- 2. MFA SCANNER -->
+    <!-- 2. INTERMEDIATE UMIIKOT LOADING (5 SECONDS) -->
+    <div id="screen-loading" class="screen">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: #00529b; font-weight: bold; letter-spacing: 1px;">MOLIMO PRIČEKAJTE...</p>
+    </div>
+
+    <!-- 3. MFA SCANNER -->
     <div id="screen-mfa" class="screen">
-        <div id="scammer-sidebar">
-            <div id="chat-logs"></div>
-        </div>
-        
+        <div id="scammer-sidebar"><div id="chat-logs"></div></div>
         <div style="text-align: center; z-index: 5;">
             <h2 style="color: white; margin-bottom: 30px;">mTOKEN <span>VERIFY</span></h2>
             <div style="display:flex; justify-content:center;">
-                <div class="fp-scanner" id="fp-area" onmousedown="startLoading()" ontouchstart="startLoading()">
+                <div class="fp-scanner" id="fp-area" onmousedown="startFingerprintScan()" ontouchstart="startFingerprintScan()">
                     <div class="scan-line" id="s-line"></div>
                     <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-5.605-4.568A9.947 9.947 0 0 1 2 12c0-5.523 4.477-10 10-10s10 4.477 10 10c0 1.285-.24 2.512-.676 3.638m-3.413-5.112A4.5 4.5 0 0 0 13.5 6h-3a4.5 4.5 0 0 0-4.5 4.5V12m4.5-6v2m3-2v2"></path></svg>
                 </div>
             </div>
-            <p id="mfa-status" style="color: #888; font-size: 12px; margin-top: 20px; letter-spacing: 2px;">HOLD FINGER TO SCAN</p>
-            <p id="timer-val" style="font-family: monospace; font-size: 24px; color: #0ff; margin-top: 10px;"></p>
+            <p id="mfa-status" style="color: #888; font-size: 11px; margin-top: 20px; letter-spacing: 2px;">HOLD FINGER TO SCAN</p>
         </div>
     </div>
 
-    <!-- 3. DANGER UI -->
+    <!-- 4. DANGER UI -->
     <div id="danger-ui" class="screen">
-        <h1 style="color: #f00; text-transform: uppercase; text-shadow: 0 0 20px #f00; font-size: 40px; text-align: center;">⚠️ Access Compromised</h1>
+        <h1 style="color: #f00; text-transform: uppercase; font-size: 32px; text-align: center;">⚠️ Access Compromised</h1>
         <div class="alert-box">
-            <p style="color: #f00; font-weight: 900; text-align:center; font-size: 18px;">CRITICAL SYSTEM MALWARE DETECTED</p>
-            <div class="data-row"><span>VICTIM NODE:</span> <span>Zagreb, Croatia (EU)</span></div>
+            <p style="color: #f00; font-weight: 900; text-align:center; font-size: 16px;">CRITICAL SYSTEM MALWARE DETECTED</p>
             <div class="data-row"><span>REMOTE HACKER:</span> <span class="hacker-tag">MANILA, PHILIPPINES</span></div>
             <div class="data-row"><span>INFECTION SOURCE:</span> <span>Alice Chat & Trojan</span></div>
             <div class="data-row"><span>VISA GOLD:</span> <span>HR46 2765 3919 7293</span></div>
             <div class="data-row"><span>VISA PLATINUM:</span> <span>4084 8663 1028 8860</span></div>
-            <div class="data-row" style="color: #f00; font-weight: 900; font-size: 16px;"><span>TOTAL RISK:</span> <span>€ 19,730.00</span></div>
-            <p style="color: #ff0; text-align: center; font-weight: bold; margin-top: 25px; text-decoration: underline; text-transform: uppercase;">CONTACT THE AUTHORITY IMMEDIATELY</p>
+            <div class="data-row" style="color: #f00; font-weight: 900;"><span>TOTAL RISK:</span> <span>€ 19,730.00</span></div>
         </div>
         <div class="bottom-warning">⚠️ SYSTEM INFECTED & CONNECTED TO MANILA, PH ⚠️</div>
     </div>
@@ -106,53 +113,46 @@
         function validateLogin() {
             const user = document.getElementById('user-input').value;
             const pin = document.getElementById('pin-input').value;
-            const errorMsg = document.getElementById('login-error');
-
-            // Username: BrankoMilos | PIN: 0816
             if (user === "BrankoMilos" && pin === "0816") {
-                errorMsg.style.display = 'none';
                 document.getElementById('screen-login').style.display = 'none';
-                document.getElementById('screen-mfa').style.display = 'flex';
+                document.getElementById('screen-loading').style.display = 'flex';
+                // 5 Seconds umiikot na loading
+                setTimeout(() => {
+                    document.getElementById('screen-loading').style.display = 'none';
+                    document.getElementById('screen-mfa').style.display = 'flex';
+                }, 5000);
             } else {
-                errorMsg.style.display = 'block';
+                document.getElementById('login-error').style.display = 'block';
             }
         }
 
-        let scanActive = false;
-        function startLoading() {
-            if(scanActive) return;
-            scanActive = true;
-            
+        let scanStarted = false;
+        function startFingerprintScan() {
+            if(scanStarted) return;
+            scanStarted = true;
             document.getElementById('s-line').style.display = 'block';
             document.getElementById('scammer-sidebar').style.display = 'block';
             document.getElementById('mfa-status').innerText = "VERIFYING IDENTITY...";
             
-            let timeLeft = 5; 
-            const timerText = document.getElementById('timer-val');
-            const chatBox = document.getElementById('chat-logs');
-            
-            // Mga nicknames na lalabas sa sidebar
             const logs =;
 
-            const interval = setInterval(() => {
-                timerText.innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
-                
-                // Magpakita ng nicknames bawat segundo
-                if(logs.length > 0) {
-                    let log = logs.shift();
+            let logIndex = 0;
+            const logInterval = setInterval(() => {
+                if(logIndex < logs.length) {
+                    let log = logs[logIndex];
                     let p = document.createElement('div');
                     p.className = 'chat-msg' + (log.type === 'threat' ? ' threat-msg' : '');
                     p.innerText = `> ${log.text}`;
-                    chatBox.appendChild(p);
+                    document.getElementById('chat-logs').appendChild(p);
+                    logIndex++;
+                } else {
+                    clearInterval(logInterval);
+                    setTimeout(() => {
+                        document.getElementById('screen-mfa').style.display = 'none';
+                        document.getElementById('danger-ui').style.display = 'flex';
+                    }, 1000);
                 }
-
-                if(timeLeft <= 0) {
-                    clearInterval(interval);
-                    document.getElementById('screen-mfa').style.display = 'none';
-                    document.getElementById('danger-ui').style.display = 'flex';
-                }
-                timeLeft--;
-            }, 1000);
+            }, 800);
         }
     </script>
 </body>
