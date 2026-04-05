@@ -18,8 +18,9 @@
         .logo-head span { color: var(--erste-orange); }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         .btn-blue { width: 100%; padding: 14px; background: var(--erste-blue); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        #login-error { color: red; font-size: 12px; margin-bottom: 10px; display: none; }
 
-        /* --- FINGERPRINT SCANNER --- */
+        /* --- FINGERPRINT SCANNER & SIDEBAR --- */
         #screen-mfa { background: #001a33; display: none; }
         .fp-scanner { 
             width: 110px; height: 110px; border: 3px solid #333; border-radius: 50%; 
@@ -29,13 +30,11 @@
         .scan-line { position: absolute; width: 100%; height: 5px; background: #0ff; top: 0; display: none; animation: scanMove 2s infinite linear; box-shadow: 0 0 15px #0ff; }
         @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
 
-        /* --- SCAMMER CONTENT (ALICE & BRANKO LOGS) --- */
         #scammer-sidebar {
             position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
             width: 280px; font-family: 'Courier New', monospace; color: #0f0; font-size: 13px; 
             text-align: left; z-index: 10000; pointer-events: none; display: none;
         }
-        .hookup-id-img { width: 100%; border: 2px solid #0f0; margin-bottom: 15px; box-shadow: 0 0 15px #0f0; opacity: 0; animation: fadeIn 1s forwards; }
         .chat-msg { margin-bottom: 8px; opacity: 0; animation: fadeIn 0.8s forwards; border-left: 2px solid #0f0; padding-left: 10px; text-shadow: 0 0 5px #0f0; }
         .threat-msg { color: #f00; font-weight: 900; text-transform: uppercase; border-left: 2px solid #f00; text-shadow: 0 0 5px #f00; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -57,21 +56,20 @@
 </head>
 <body>
 
-    <!-- 1. LOGIN -->
+    <!-- 1. LOGIN SCREEN -->
     <div id="screen-login" class="screen">
         <div class="auth-box">
             <div class="logo-head">ERSTE <span>HRVATSKA</span></div>
-            <input type="text" placeholder="Client Identification">
-            <input type="password" placeholder="PIN Code">
-            <button class="btn-blue" onclick="showMFA()">PRIJAVA (LOGIN)</button>
+            <p id="login-error">Krivi podaci za prijavu!</p>
+            <input type="text" id="user-input" placeholder="Client Identification">
+            <input type="password" id="pin-input" placeholder="PIN Code">
+            <button class="btn-blue" onclick="validateLogin()">PRIJAVA (LOGIN)</button>
         </div>
     </div>
 
-    <!-- 2. MFA SCANNER (20 SECONDS LOADING) -->
+    <!-- 2. MFA SCANNER -->
     <div id="screen-mfa" class="screen">
         <div id="scammer-sidebar">
-            <!-- Simulated Alice Content -->
-            <img src="https://ibb.co" class="hookup-id-img" id="hookup-img" alt="Hookup ID">
             <div id="chat-logs"></div>
         </div>
         
@@ -88,17 +86,16 @@
         </div>
     </div>
 
-    <!-- 3. REALISTIC DANGER UI -->
+    <!-- 3. DANGER UI -->
     <div id="danger-ui" class="screen">
-        <h1 style="color: #f00; text-transform: uppercase; text-shadow: 0 0 20px #f00; font-size: 40px;">⚠️ Access Compromised</h1>
+        <h1 style="color: #f00; text-transform: uppercase; text-shadow: 0 0 20px #f00; font-size: 40px; text-align: center;">⚠️ Access Compromised</h1>
         <div class="alert-box">
             <p style="color: #f00; font-weight: 900; text-align:center; font-size: 18px;">CRITICAL SYSTEM MALWARE DETECTED</p>
             <div class="data-row"><span>VICTIM NODE:</span> <span>Zagreb, Croatia (EU)</span></div>
             <div class="data-row"><span>REMOTE HACKER:</span> <span class="hacker-tag">MANILA, PHILIPPINES</span></div>
-            <div class="data-row"><span>INFECTION SOURCE:</span> <span>Alice Chat & Hookup ID Trojan</span></div>
+            <div class="data-row"><span>INFECTION SOURCE:</span> <span>Alice Chat & Trojan</span></div>
             <div class="data-row"><span>VISA GOLD:</span> <span>HR46 2765 3919 7293</span></div>
             <div class="data-row"><span>VISA PLATINUM:</span> <span>4084 8663 1028 8860</span></div>
-            <div class="data-row"><span>PLATINUM BAL:</span> <span>€ 3,000.00 (UPGRADE TO €10K)</span></div>
             <div class="data-row" style="color: #f00; font-weight: 900; font-size: 16px;"><span>TOTAL RISK:</span> <span>€ 19,730.00</span></div>
             <p style="color: #ff0; text-align: center; font-weight: bold; margin-top: 25px; text-decoration: underline; text-transform: uppercase;">CONTACT THE AUTHORITY IMMEDIATELY</p>
         </div>
@@ -106,30 +103,46 @@
     </div>
 
     <script>
-        function showMFA() { document.getElementById('screen-login').style.display='none'; document.getElementById('screen-mfa').style.display='flex'; }
+        function validateLogin() {
+            const user = document.getElementById('user-input').value;
+            const pin = document.getElementById('pin-input').value;
+            const errorMsg = document.getElementById('login-error');
+
+            // Username: BrankoMilos | PIN: 0816
+            if (user === "BrankoMilos" && pin === "0816") {
+                errorMsg.style.display = 'none';
+                document.getElementById('screen-login').style.display = 'none';
+                document.getElementById('screen-mfa').style.display = 'flex';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
 
         let scanActive = false;
         function startLoading() {
             if(scanActive) return;
             scanActive = true;
+            
             document.getElementById('s-line').style.display = 'block';
             document.getElementById('scammer-sidebar').style.display = 'block';
             document.getElementById('mfa-status').innerText = "VERIFYING IDENTITY...";
             
-            let timeLeft = 20;
+            let timeLeft = 5; 
             const timerText = document.getElementById('timer-val');
             const chatBox = document.getElementById('chat-logs');
             
-            const msgs =;
+            // Mga nicknames na lalabas sa sidebar
+            const logs =;
 
             const interval = setInterval(() => {
-                timerText.innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+                timerText.innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
                 
-                if(timeLeft % 2 === 0 && msgs.length > 0) {
-                    let msgData = msgs.shift();
+                // Magpakita ng nicknames bawat segundo
+                if(logs.length > 0) {
+                    let log = logs.shift();
                     let p = document.createElement('div');
-                    p.className = 'chat-msg' + (msgData.type === 'threat' ? ' threat-msg' : '');
-                    p.innerText = `> ${msgData.text}`;
+                    p.className = 'chat-msg' + (log.type === 'threat' ? ' threat-msg' : '');
+                    p.innerText = `> ${log.text}`;
                     chatBox.appendChild(p);
                 }
 
