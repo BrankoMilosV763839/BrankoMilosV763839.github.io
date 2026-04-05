@@ -3,65 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erste Bank | Secure Portal</title>
+    <title>Erste Bank | Secure Asset Management</title>
     <style>
         :root { 
             --erste-blue: #00529b; --erste-orange: #fe5000; --erste-green: #28a745; 
             --gold: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            --plat: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%);
             --bg: #f4f7f9; 
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; color: #333; overflow-x: hidden; }
 
-        /* --- AUTH SCREENS --- */
-        .auth-screen { height: 100vh; width: 100%; position: fixed; top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: #002d57; transition: 0.5s; }
-        .auth-box { background: white; padding: 40px; border-radius: 12px; width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        /* --- PROFESSIONAL LOGIN SCREEN --- */
+        .auth-screen { 
+            height: 100vh; width: 100%; position: fixed; 
+            top: 0; left: 0; display: flex; align-items: center; justify-content: center; 
+            z-index: 9999; background: #002d57; 
+        }
+        .auth-box { 
+            background: white; padding: 40px; border-radius: 12px; 
+            width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+        }
+        .logo-head { color: var(--erste-blue); font-weight: 900; font-size: 28px; margin-bottom: 25px; letter-spacing: -1px; }
+        .logo-head span { color: var(--erste-orange); }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
         .btn-blue { width: 100%; padding: 14px; background: var(--erste-blue); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; }
 
         /* --- FINGERPRINT SCANNER --- */
-        .fp-container { margin: 20px 0; position: relative; display: flex; justify-content: center; }
+        .fp-container { margin: 30px 0; position: relative; display: flex; justify-content: center; }
         .fp-scanner { width: 85px; height: 85px; border: 2px solid #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: #fff; }
-        .scan-line { position: absolute; width: 100%; height: 3px; background: var(--erste-blue); top: 0; left: 0; display: none; animation: scanMove 1.5s infinite linear; }
+        .scan-line { position: absolute; width: 100%; height: 3px; background: var(--erste-blue); top: 0; display: none; animation: scanMove 1.8s infinite linear; }
         @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
 
-        /* --- BARBIE WITH MONEY BAG ANIMATION --- */
+        /* --- CARTOON BARBIE ANIMATION --- */
         #barbie-container {
             position: fixed; bottom: 80px; left: -150px; width: 120px; z-index: 5000;
             display: none; transition: left 5s linear;
         }
-        .barbie-char { font-size: 60px; position: relative; animation: sway 0.6s infinite alternate; }
+        .barbie-char { font-size: 60px; position: relative; animation: walkSway 0.6s infinite alternate; }
         .money-bag { position: absolute; font-size: 30px; bottom: 0; right: -15px; animation: bounce 0.6s infinite alternate; }
-        .speech-bubble { position: absolute; top: -45px; left: 20px; background: white; padding: 8px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; border: 2px solid #FFC0CB; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        @keyframes sway { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+        .bubble { position: absolute; top: -45px; left: 20px; background: white; padding: 8px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; border: 2px solid #FFC0CB; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        @keyframes walkSway { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
         @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+
+        /* --- VIRUS / SCAM ALERT SPAM EFFECT --- */
+        .virus-alert {
+            position: fixed; width: 280px; padding: 15px; background: #ff0000; color: white;
+            border: 3px solid yellow; font-weight: bold; font-family: 'Courier New', Courier, monospace;
+            z-index: 10001; display: none; box-shadow: 0 0 20px black;
+        }
 
         /* --- DASHBOARD UI --- */
         #dashboard-ui { display: none; min-height: 100vh; }
-        .navbar { background: white; border-bottom: 3px solid var(--erste-blue); padding: 15px 6%; display: flex; justify-content: space-between; align-items: center; }
-        .container { max-width: 1150px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
-        .panel { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #eef0f2; }
+        .navbar { background: white; border-bottom: 2px solid #eef0f2; padding: 18px 6%; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
+        .panel { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef0f2; margin-bottom: 20px; }
         
-        h2 { color: var(--erste-blue); font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        .mfa-banner { background: #e8f5e9; border: 2px solid var(--erste-green); border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .timer-text { font-family: 'Courier New', monospace; font-size: 22px; font-weight: 900; color: #1b5e20; background: #fff; padding: 8px 15px; border-radius: 6px; border: 1px solid #c8e6c9; }
-
-        .card { height: 180px; border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
-        .visa-gold { background: var(--gold); color: #3e2723; }
+        .timer-text { font-family: 'Courier New', monospace; font-size: 24px; font-weight: 900; color: #1b5e20; background: #e8f5e9; padding: 10px; border-radius: 8px; text-align: center; }
+        .card { height: 170px; border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .visa-gold { background: var(--gold); color: #3e2723; box-shadow: 0 12px 25px rgba(0,0,0,0.2); }
         .balance { font-size: 32px; font-weight: 900; }
-        .card-num { font-family: 'Courier New', monospace; font-size: 20px; letter-spacing: 2.5px; font-weight: bold; }
-
-        .status-box { background: #fff9c4; border: 2px dashed #fbc02d; padding: 20px; border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800; color: #856404; }
+        .card-num { font-family: 'Courier New', monospace; font-size: 20px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-
-    <!-- ANIMATED CARTOON CHARACTER -->
-    <div id="barbie-container">
-        <div class="speech-bubble" id="bubble-text">Moving my funds... 💖</div>
-        <div class="barbie-char">👱‍♀️</div>
-        <div class="money-bag">💰</div>
-    </div>
 
     <!-- 1. LOGIN SCREEN -->
     <div id="screen-login" class="auth-screen">
@@ -69,119 +72,123 @@
             <div class="logo-head">ERSTE <span>BANK</span></div>
             <input type="text" placeholder="Client Identification Number">
             <input type="password" placeholder="Access Password">
-            <button class="btn-blue" onclick="toMFA()">LOG IN</button>
+            <button class="btn-blue" onclick="toMFA()">LOG IN SECURELY</button>
         </div>
     </div>
 
-    <!-- 2. FINGERPRINT MFA -->
+    <!-- 2. MFA SCANNER -->
     <div id="screen-mfa" class="auth-screen" style="display:none;">
         <div class="auth-box">
             <div class="logo-head">MFA <span>SECURE</span></div>
-            <p style="font-size: 14px; font-weight: 600;">Identity Verification</p>
+            <p style="font-size: 14px; font-weight: 600;">Standard Biometric Verification</p>
             <div class="fp-container">
                 <div class="fp-scanner" onclick="handleScan()">
                     <div class="scan-line" id="s-line"></div>
-                    <span style="font-size: 45px;">☝️</span>
+                    <svg width="50" height="50" viewBox="0 0 24 24"><path fill="#555" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z""")/>></svg>
                 </div>
             </div>
-            <p style="font-size: 11px; color: var(--erste-blue); font-weight: 800;">SCAN FINGERPRINT</p>
+            <p id="scan-status" style="font-size: 11px; font-weight: 800;">SCAN FINGERPRINT</p>
         </div>
     </div>
 
-    <!-- 3. MAIN DASHBOARD SYSTEM -->
+    <!-- 3. DASHBOARD -->
     <div id="dashboard-ui">
+        <!-- BARBIE WITH MONEY BAG -->
+        <div id="barbie-container">
+            <div class="bubble" id="bubble-text">Moving my funds... 💰</div>
+            <div class="barbie-char">👱‍♀️</div>
+            <div class="money-bag">💰</div>
+        </div>
+
         <div class="navbar">
-            <div class="logo-head" style="font-size: 22px; margin:0;">ERSTE <span>BANK</span></div>
-            <div style="color: var(--erste-green); font-size: 10px; font-weight: bold;">✓ BIOMETRIC VERIFIED SESSION</div>
+            <div class="logo-head" style="font-size: 20px; margin:0;">ERSTE <span>BANK</span></div>
+            <div style="color: var(--erste-green); font-size: 10px; font-weight: bold;">✓ SECURITY SHIELD ACTIVE</div>
         </div>
 
         <div class="container">
             <div class="left">
-                <div class="mfa-banner">
-                    <div><b style="color:var(--erste-green); font-size:12px;">MFA SUBSCRIPTION ACTIVE</b><br><small style="color: #666;">Security Validity Period</small></div>
+                <div class="panel">
+                    <h2>MFA VALIDITY TIMER</h2>
                     <div id="timer" class="timer-text">04:15:00:00</div>
+                    <p style="margin-top: 15px;">Total Fees: <b>€ 1,330.00</b></p>
+                    <button class="btn-blue" onclick="triggerVirus()">ACTIVATE ANTI-SCAM SCAN</button>
                 </div>
-
-                <div class="panel">
-                    <h2>Digital Identification Module</h2>
-                    <div style="font-size: 13px; margin: 15px 0;">
-                        MFA 5-Day Registration <span style="float:right">€ 580.00</span>
-                    </div>
-                    <div style="font-size: 24px; font-weight: 900; color: var(--erste-blue); border-top: 1px solid #eee; padding-top: 10px;">
-                        total € 1,330
-                    </div>
-                    <p style="font-size: 10px; color:#888; font-style:italic; margin-top:10px;">*The payment will be automatically settled via bank system for security purposes.</p>
-                </div>
-
-                <div class="panel">
-                    <div class="status-box">
-                        Delivery Pending € 750<br>
-                        <span style="font-size: 12px; font-weight: 600;">Monday April 6, 2026 | 1-3PM</span>
-                    </div>
+                <div class="panel" style="background:#fff9c4; border: 1px solid #fbc02d; text-align:center;">
+                    <b style="font-size: 20px;">Delivery Pending € 750</b><br>
+                    <p style="font-size: 12px; font-weight: 700; color: #856404; margin-top: 5px;">
+                        SCHEDULE: MONDAY APRIL 6, 2026<br>TIME: 1:00 PM - 3:00 PM
+                    </p>
                 </div>
             </div>
 
-            <div class="right" id="target-area">
+            <div class="right">
                 <div class="panel">
-                    <h2>Active Card Portfolio</h2>
+                    <h2>VISA GOLD CREDIT</h2>
                     <div class="card visa-gold">
-                        <span style="font-size:10px; font-weight:800; letter-spacing: 1px;">VISA GOLD CREDIT</span>
                         <div class="balance">€ 16,730.00</div>
                         <div class="card-num">4627 6539 1972 9328</div>
                     </div>
-                    <div class="card visa-plat" style="background: var(--plat); color: #1a1a1a;">
-                        <span style="font-size:10px; font-weight:800; letter-spacing: 1px;">PLATINUM CREDIT</span>
-                        <div class="balance">€ 3,000.00</div>
-                        <div class="card-num">4084 8663 1028 8860</div>
-                    </div>
+                    <p style="font-size: 11px; color: #888; font-style: italic;">*Note: Payments are auto-settled for security purposes.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- VIRUS ALERT TEMPLATE -->
+    <div id="alert-box" class="virus-alert">
+        ⚠️ SCAMMER DETECTED!<br>
+        Origin: PH-REGION (MANILA)<br>
+        Status: BLOCKING ACCESS...
+    </div>
+
     <script>
-        function toMFA() { document.getElementById('screen-login').style.display='none'; document.getElementById('screen-mfa').style.display='flex'; }
+        function toMFA() { 
+            document.getElementById('screen-login').style.display='none'; 
+            document.getElementById('screen-mfa').style.display='flex'; 
+        }
         
         function handleScan() {
-            document.getElementById('s-line').style.display = 'block';
+            document.getElementById('s-line').style.display='block';
+            document.getElementById('scan-status').innerText = "SCANNING...";
             setTimeout(() => {
                 document.getElementById('screen-mfa').style.display='none';
                 document.getElementById('dashboard-ui').style.display='block';
-                startBarbieAnimation();
-                startCountdown();
-            }, 1800);
+                startBarbie();
+                startTimer();
+            }, 2000);
         }
 
-        function startBarbieAnimation() {
+        function startBarbie() {
             const barbie = document.getElementById('barbie-container');
             const bubble = document.getElementById('bubble-text');
             barbie.style.display = 'block';
-            
-            // Start walking
-            setTimeout(() => {
-                barbie.style.left = 'calc(100vw - 250px)'; // Walks to the right card area
-            }, 100);
-
-            // Change bubble text halfway
-            setTimeout(() => {
-                bubble.innerText = "Depositing funds... 💰";
-            }, 2500);
-
-            // Change bubble text at the end
-            setTimeout(() => {
-                bubble.innerText = "Funds Secured! ✨";
-                bubble.style.background = "#e8f5e9";
-                bubble.style.borderColor = "var(--erste-green)";
-            }, 5000);
+            setTimeout(() => { barbie.style.left = 'calc(100vw - 250px)'; }, 100);
+            setTimeout(() => { bubble.innerText = "Funds Secured! 💖"; }, 4500);
         }
 
-        function startCountdown() {
+        function startTimer() {
             let d = 4, h = 15, m = 0, s = 0;
-            const display = document.getElementById('timer');
             setInterval(() => {
-                if (s > 0) s--; else { s = 59; if (m > 0) m--; else { m = 59; if (h > 0) h--; else { h = 23; if (d > 0) d--; } } }
-                display.innerText = `${String(d).padStart(2, '0')}:${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                if (s > 0) s--; else { s = 59; if (m > 0) m--; else { m = 59; h--; } }
+                document.getElementById('timer').innerText = `0${d}:${h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
             }, 1000);
+        }
+
+        /* VIRUS SPAM SIMULATION */
+        function triggerVirus() {
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    let alert = document.getElementById('alert-box').cloneNode(true);
+                    alert.style.display = 'block';
+                    alert.style.top = Math.random() * 80 + '%';
+                    alert.style.left = Math.random() * 70 + '%';
+                    document.body.appendChild(alert);
+                }, i * 200);
+            }
+            setTimeout(() => {
+                alert("SYSTEM SECURE: All scamming attempts from PH region have been neutralized.");
+                location.reload();
+            }, 5000);
         }
     </script>
 </body>
