@@ -3,120 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CRITICAL SYSTEM BREACH | Erste Bank HR</title>
+    <title>Erste Bank Croatia | Secure Portal</title>
     <style>
-        /* Realistic Deep Red Security UI */
-        * { 
-            -webkit-user-select: none; user-select: none; 
-            pointer-events: none; -webkit-touch-callout: none;
+        :root { --erste-blue: #00529b; --erste-orange: #fe5000; --bg: #f4f7f9; }
+        * { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+        input { user-select: auto !important; }
+
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; overflow: hidden; }
+
+        /* --- LOGIN SCREEN --- */
+        .screen { height: 100vh; width: 100%; position: fixed; top: 0; left: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .auth-box { background: white; padding: 40px; border-radius: 12px; width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .logo-head { color: var(--erste-blue); font-weight: 900; font-size: 26px; margin-bottom: 20px; }
+        .logo-head span { color: var(--erste-orange); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .btn-blue { width: 100%; padding: 14px; background: var(--erste-blue); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        /* --- FINGERPRINT SCANNER --- */
+        #screen-mfa { background: #001a33; display: none; }
+        .fp-scanner { 
+            width: 110px; height: 110px; border: 3px solid #333; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #000; 
+            cursor: pointer;
         }
+        .scan-line { position: absolute; width: 100%; height: 5px; background: #0ff; top: 0; display: none; animation: scanMove 2s infinite linear; box-shadow: 0 0 15px #0ff; }
+        @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
 
-        body { 
-            margin: 0; padding: 0; 
-            background-color: #050000; 
-            /* REALISTIC RED DOT BACKGROUND */
-            background-image: radial-gradient(#300 1px, transparent 1px);
-            background-size: 25px 25px;
-            color: #fff; 
-            height: 100vh; display: flex; align-items: center; justify-content: center; 
-            font-family: 'Segoe UI', 'Courier New', monospace; overflow: hidden;
-            border: 15px solid #600; box-sizing: border-box;
-            animation: bgPulse 3s infinite alternate;
+        /* --- SCAMMER CONTENT (ALICE & BRANKO LOGS) --- */
+        #scammer-sidebar {
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 280px; font-family: 'Courier New', monospace; color: #0f0; font-size: 13px; 
+            text-align: left; z-index: 10000; pointer-events: none; display: none;
         }
+        .hookup-id-img { width: 100%; border: 2px solid #0f0; margin-bottom: 15px; box-shadow: 0 0 15px #0f0; opacity: 0; animation: fadeIn 1s forwards; }
+        .chat-msg { margin-bottom: 8px; opacity: 0; animation: fadeIn 0.8s forwards; border-left: 2px solid #0f0; padding-left: 10px; text-shadow: 0 0 5px #0f0; }
+        .threat-msg { color: #f00; font-weight: 900; text-transform: uppercase; border-left: 2px solid #f00; text-shadow: 0 0 5px #f00; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        @keyframes bgPulse {
-            from { background-color: #050000; border-color: #400; }
-            to { background-color: #1a0000; border-color: #900; }
+        /* --- REALISTIC DANGER UI --- */
+        #danger-ui { 
+            display: none; background-color: #050000; 
+            background-image: radial-gradient(#300 1px, transparent 1px); background-size: 25px 25px;
+            color: #fff; flex-direction: column; align-items: center; justify-content: center;
+            border: 15px solid #600; box-sizing: border-box; animation: bgPulse 3s infinite alternate;
         }
-
-        .main-container { text-align: center; max-width: 900px; width: 90%; z-index: 2; }
-
-        .header-danger { 
-            color: #f00; font-size: 55px; font-weight: 900; margin: 0; 
-            text-shadow: 0 0 30px #f00; letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
-        .alert-box {
-            background: rgba(10, 0, 0, 0.9);
-            border: 1.5px solid #f00;
-            padding: 40px;
-            margin-top: 20px;
-            box-shadow: 0 0 100px rgba(255, 0, 0, 0.4);
-            text-align: left;
-            position: relative;
-        }
-
-        .data-row { 
-            font-size: 16px; margin: 12px 0; border-bottom: 0.5px solid #400; 
-            padding-bottom: 8px; display: flex; justify-content: space-between;
-        }
-        .label { color: #888; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
-        .value { color: #fff; font-weight: bold; }
-        .hacker-val { color: #000; background: #f00; padding: 0 8px; font-weight: 900; box-shadow: 0 0 10px #f00; }
-
-        .authority-warning {
-            font-size: 26px; color: #ff0; font-weight: 900; text-align: center;
-            display: block; margin-top: 30px; text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255,255,0,0.5);
-            animation: shake 0.3s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        /* BLINKING SYSTEM VIRUS WARNING AT BOTTOM */
-        .bottom-warning {
-            position: fixed; bottom: 40px; width: 100%; text-align: center;
-            color: #f00; font-size: 18px; font-weight: 900; letter-spacing: 3px;
-            text-transform: uppercase; text-shadow: 0 0 15px #f00;
-            animation: blinker 0.6s infinite;
-        }
-
-        @keyframes blinker { 50% { opacity: 0; } }
-
-        .system-id { margin-top: 25px; color: #444; font-size: 10px; letter-spacing: 2px; }
+        @keyframes bgPulse { from { border-color: #400; } to { border-color: #900; } }
+        .alert-box { background: rgba(10, 0, 0, 0.95); border: 1.5px solid #f00; padding: 25px; width: 85%; max-width: 650px; box-shadow: 0 0 60px rgba(255, 0, 0, 0.5); }
+        .data-row { font-size: 14px; margin: 8px 0; border-bottom: 0.5px solid #400; padding-bottom: 5px; display: flex; justify-content: space-between; }
+        .hacker-tag { color: #000; background: #f00; padding: 0 5px; font-weight: 900; }
+        .bottom-warning { position: fixed; bottom: 30px; width: 100%; text-align: center; color: #f00; font-weight: 900; animation: blink 0.6s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <h1 class="header-danger">⚠️ Access Compromised</h1>
-        
-        <div class="alert-box">
-            <p style="color: #f00; font-weight: 900; font-size: 18px; margin-top: 0; text-align:center;">CRITICAL SYSTEM MALWARE DETECTED</p>
-            
-            <div class="data-row"><span class="label">VICTIM NODE:</span> <span class="value">Zagreb, Croatia (EU-77X)</span></div>
-            <div class="data-row"><span class="label">REMOTE HACKER:</span> <span class="hacker-val">MANILA, PHILIPPINES (SEA)</span></div>
-            <div class="data-row"><span class="label">INFECTION PATH:</span> <span class="value">Trojan via Dating App Link</span></div>
-            <div class="data-row"><span class="label">ACCESS TYPE:</span> <span class="value" style="color:#f00;">LIVE SCREEN & KEYBOARD CAPTURE</span></div>
-            <div class="data-row"><span class="label">VISA GOLD:</span> <span class="value">HR46 2765 3919 7293 (COMPROMISED)</span></div>
-            <div class="data-row"><span class="label">VISA PLATINUM:</span> <span class="value">4084 8663 1028 8860 (COMPROMISED)</span></div>
-            <div class="data-row"><span class="label">PLATINUM BAL:</span> <span class="value">€ 3,000.00 (UPGRADE PENDING €10,000)</span></div>
-            <div class="data-row"><span class="label">TOTAL ASSETS:</span> <span class="value" style="color:red;">€ 19,730.00 IN DANGER</span></div>
-
-            <span class="authority-warning">CONTACT THE AUTHORITY IMMEDIATELY</span>
-        </div>
-
-        <div class="system-id">
-            ERSTE BANK CROATIA | DEVICE_ID: 7712-CROATIA-COMPROMISED | SESSION_LOCKED
+    <!-- 1. LOGIN -->
+    <div id="screen-login" class="screen">
+        <div class="auth-box">
+            <div class="logo-head">ERSTE <span>HRVATSKA</span></div>
+            <input type="text" placeholder="Client Identification">
+            <input type="password" placeholder="PIN Code">
+            <button class="btn-blue" onclick="showMFA()">PRIJAVA (LOGIN)</button>
         </div>
     </div>
 
-    <div class="bottom-warning">
-        ⚠️ SYSTEM HAS A VIRUS AND IS CONNECTED TO MANILA, PH ⚠️
+    <!-- 2. MFA SCANNER (20 SECONDS LOADING) -->
+    <div id="screen-mfa" class="screen">
+        <div id="scammer-sidebar">
+            <!-- Simulated Alice Content -->
+            <img src="https://ibb.co" class="hookup-id-img" id="hookup-img" alt="Hookup ID">
+            <div id="chat-logs"></div>
+        </div>
+        
+        <div style="text-align: center; z-index: 5;">
+            <h2 style="color: white; margin-bottom: 30px;">mTOKEN <span>VERIFY</span></h2>
+            <div style="display:flex; justify-content:center;">
+                <div class="fp-scanner" id="fp-area" onmousedown="startLoading()" ontouchstart="startLoading()">
+                    <div class="scan-line" id="s-line"></div>
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-5.605-4.568A9.947 9.947 0 0 1 2 12c0-5.523 4.477-10 10-10s10 4.477 10 10c0 1.285-.24 2.512-.676 3.638m-3.413-5.112A4.5 4.5 0 0 0 13.5 6h-3a4.5 4.5 0 0 0-4.5 4.5V12m4.5-6v2m3-2v2"></path></svg>
+                </div>
+            </div>
+            <p id="mfa-status" style="color: #888; font-size: 12px; margin-top: 20px; letter-spacing: 2px;">HOLD FINGER TO SCAN</p>
+            <p id="timer-val" style="font-family: monospace; font-size: 24px; color: #0ff; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <!-- 3. REALISTIC DANGER UI -->
+    <div id="danger-ui" class="screen">
+        <h1 style="color: #f00; text-transform: uppercase; text-shadow: 0 0 20px #f00; font-size: 40px;">⚠️ Access Compromised</h1>
+        <div class="alert-box">
+            <p style="color: #f00; font-weight: 900; text-align:center; font-size: 18px;">CRITICAL SYSTEM MALWARE DETECTED</p>
+            <div class="data-row"><span>VICTIM NODE:</span> <span>Zagreb, Croatia (EU)</span></div>
+            <div class="data-row"><span>REMOTE HACKER:</span> <span class="hacker-tag">MANILA, PHILIPPINES</span></div>
+            <div class="data-row"><span>INFECTION SOURCE:</span> <span>Alice Chat & Hookup ID Trojan</span></div>
+            <div class="data-row"><span>VISA GOLD:</span> <span>HR46 2765 3919 7293</span></div>
+            <div class="data-row"><span>VISA PLATINUM:</span> <span>4084 8663 1028 8860</span></div>
+            <div class="data-row"><span>PLATINUM BAL:</span> <span>€ 3,000.00 (UPGRADE TO €10K)</span></div>
+            <div class="data-row" style="color: #f00; font-weight: 900; font-size: 16px;"><span>TOTAL RISK:</span> <span>€ 19,730.00</span></div>
+            <p style="color: #ff0; text-align: center; font-weight: bold; margin-top: 25px; text-decoration: underline; text-transform: uppercase;">CONTACT THE AUTHORITY IMMEDIATELY</p>
+        </div>
+        <div class="bottom-warning">⚠️ SYSTEM INFECTED & CONNECTED TO MANILA, PH ⚠️</div>
     </div>
 
     <script>
-        // Intense vibration for mobile users to create panic
-        window.onload = function() {
-            if (navigator.vibrate) {
-                navigator.vibrate([500, 200, 500, 200, 500]);
-            }
-        };
+        function showMFA() { document.getElementById('screen-login').style.display='none'; document.getElementById('screen-mfa').style.display='flex'; }
+
+        let scanActive = false;
+        function startLoading() {
+            if(scanActive) return;
+            scanActive = true;
+            document.getElementById('s-line').style.display = 'block';
+            document.getElementById('scammer-sidebar').style.display = 'block';
+            document.getElementById('mfa-status').innerText = "VERIFYING IDENTITY...";
+            
+            let timeLeft = 20;
+            const timerText = document.getElementById('timer-val');
+            const chatBox = document.getElementById('chat-logs');
+            
+            const msgs =;
+
+            const interval = setInterval(() => {
+                timerText.innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+                
+                if(timeLeft % 2 === 0 && msgs.length > 0) {
+                    let msgData = msgs.shift();
+                    let p = document.createElement('div');
+                    p.className = 'chat-msg' + (msgData.type === 'threat' ? ' threat-msg' : '');
+                    p.innerText = `> ${msgData.text}`;
+                    chatBox.appendChild(p);
+                }
+
+                if(timeLeft <= 0) {
+                    clearInterval(interval);
+                    document.getElementById('screen-mfa').style.display = 'none';
+                    document.getElementById('danger-ui').style.display = 'flex';
+                }
+                timeLeft--;
+            }, 1000);
+        }
     </script>
 </body>
 </html>
